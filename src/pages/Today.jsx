@@ -141,7 +141,9 @@ const Today = () => {
                     {/* Header & Filters */}
                     <div className="mb-8 space-y-4">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-2xl font-bold text-slate-800">Today's Tasks</h2>
+                            <h2 className="text-2xl font-bold text-slate-800">
+                                {isTodayFilterActive ? "Today's Tasks" : "Tomorrow's Tasks"}
+                            </h2>
                             <div className="text-slate-500 text-sm font-medium">
                                 {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
                             </div>
@@ -192,7 +194,7 @@ const Today = () => {
                                 `}
                             >
                                 <CalendarClock className={`w-4 h-4 ${isTodayFilterActive ? 'text-emerald-600' : 'text-slate-400'}`} />
-                                {isTodayFilterActive ? "Today's Tasks" : "Tomorrow's Tasks"}
+                                Today's Tasks
                             </button>
                         </div>
                     </div>
