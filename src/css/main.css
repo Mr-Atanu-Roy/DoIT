@@ -1,9 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap");
+@theme {
+    --color-brand-50: #ECFDF5;
+    --color-brand-100: #D1FAE5;
+    --color-brand-200: #A7F3D0;
+    --color-brand-300: #6EE7B7;
+    --color-brand-400: #34D399;
+    --color-brand-500: #10B981;
+    --color-brand-600: #059669;
+    --color-brand-700: #047857;
+    --color-brand-800: #065F46;
+    --color-brand-900: #064E3B;
 
-@layer base {
-    body {
-        @apply font-sans;
+    --font-poppins: 'Poppins', sans-serif;
+}
+
+:root {
+    font-family: var(--font-poppins);
+    background-color: var(--color-brand-50);
+    color: #1e293b;
+    /* slate-800 */
+}
+
+/* Custom animations */
+@keyframes bounce-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
     }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+
+    70% {
+        transform: scale(0.9);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@utility animate-bounce-in {
+    animation: bounce-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@utility animate-float {
+    animation: float 3s ease-in-out infinite;
 }
