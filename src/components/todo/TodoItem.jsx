@@ -20,9 +20,9 @@ const TodoItem = ({ todo, onToggle, onDelete }) => {
           `}
                 >
                     {todo.completed ? (
-                        <CheckCircle2 className="w-6 h-6" />
+                        <CheckCircle2 className="w-6 h-6 cursor-pointer" />
                     ) : (
-                        <Circle className="w-6 h-6" />
+                        <Circle className="w-6 h-6 cursor-pointer" />
                     )}
                 </button>
                 <span
@@ -41,7 +41,7 @@ const TodoItem = ({ todo, onToggle, onDelete }) => {
                 className="opacity-0 group-hover:opacity-100 transition-opacity p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg focus:opacity-100 focus:outline-none"
                 aria-label="Delete task"
             >
-                <Trash2 className="w-5 h-5" />
+                <Trash2 className="w-5 h-5 cursor-pointer" />
             </button>
         </div>
     );

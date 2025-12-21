@@ -22,13 +22,13 @@ const Sidebar = ({ isOpen, onClose }) => {
 
             {/* Sidebar */}
             <aside className={`
-        fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-slate-100 shadow-xl lg:shadow-none
+        fixed top-0 left-0 z-50 h-full w-72 lg:w-64 bg-white border-r border-slate-100 shadow-xl lg:shadow-none
         transition-transform duration-300 ease-spring
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
                 <div className="flex flex-col h-full">
                     {/* Logo */}
-                    <div className="h-16 flex items-center px-6 border-b border-slate-50">
+                    <div className="pt-4 lg:pt-1.5 h-16 flex items-center px-6 border-b border-slate-50">
                         <div className="flex items-center gap-2 font-extrabold text-4xl tracking-tight">
                             <Rocket className="w-7 h-7 text-emerald-600 animate-float" />
                             <span className="bg-linear-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">DoIT</span>

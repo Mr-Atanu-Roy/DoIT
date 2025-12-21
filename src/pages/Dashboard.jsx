@@ -77,7 +77,7 @@ const Dashboard = () => {
                                 <Button
                                     type="submit"
                                     variant="primary"
-                                    className="h-full w-14 rounded-xl p-0 flex items-center justify-center shadow-md hover:shadow-lg"
+                                    className="h-full w-14 rounded-xl p-0 flex items-center justify-center shadow-md hover:shadow-lg cursor-pointer"
                                     disabled={!newTask.trim()}
                                 >
                                     <Plus className="w-6 h-6" />
