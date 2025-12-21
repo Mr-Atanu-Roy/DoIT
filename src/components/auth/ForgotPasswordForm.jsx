@@ -30,7 +30,7 @@ const ForgotPasswordForm = () => {
                 </p>
                 <div className="pt-4">
                     <Link to="/login">
-                        <Button variant="secondary" className="w-full">
+                        <Button variant="secondary" className="w-full cursor-pointer">
                             Back to Login
                         </Button>
                     </Link>
@@ -53,7 +53,7 @@ const ForgotPasswordForm = () => {
                 Enter the email address associated with your account and we'll send you a link to reset your password.
             </p>
 
-            <Button type="submit" variant="primary" className="w-full py-2.5" isLoading={isLoading}>
+            <Button type="submit" variant="primary" className="w-full py-2.5 cursor-pointer" isLoading={isLoading}>
                 Send Reset Link
             </Button>
 

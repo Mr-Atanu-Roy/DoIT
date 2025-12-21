@@ -40,7 +40,7 @@ const LoginForm = () => {
                 <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-[39px] text-slate-400 hover:text-slate-600 transition-colors"
+                    className="absolute right-3 top-[39px] text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
                 >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -48,7 +48,7 @@ const LoginForm = () => {
 
             <div className="flex items-center justify-between text-sm">
                 <label className="flex items-center gap-2 cursor-pointer group">
-                    <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500 transition-colors" />
+                    <input type="checkbox" className="cursor-pointer w-4 h-4 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500 transition-colors" />
                     <span className="text-slate-500 group-hover:text-slate-700 transition-colors">Remember me</span>
                 </label>
                 <Link to="/forgot-password" class="font-medium text-emerald-500 hover:text-emerald-600 transition-colors">
@@ -56,7 +56,7 @@ const LoginForm = () => {
                 </Link>
             </div>
 
-            <Button type="submit" variant="primary" className="w-full py-2.5" isLoading={isLoading}>
+            <Button type="submit" variant="primary" className="w-full py-2.5 cursor-pointer" isLoading={isLoading}>
                 Sign In <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
 

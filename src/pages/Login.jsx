@@ -14,7 +14,6 @@ const Login = () => {
                         <Rocket className="w-6 h-6" />
                     </div>
                     <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Welcome Back</h1>
-                    <p className="text-slate-500 mt-2 text-sm">Sign in to JustDOIT and start achieving.</p>
                 </div>
 
                 <LoginForm />

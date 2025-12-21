@@ -4,7 +4,7 @@ import Header from '../components/layout/Header';
 import TodoList from '../components/todo/TodoList';
 import Button from '../components/ui/Button';
 import TaskDetailsPanel from '../components/todo/TaskDetailsPanel';
-import { Plus, ChevronDown, Filter, CalendarClock } from 'lucide-react';
+import { Plus, ChevronDown, CalendarClock } from 'lucide-react';
 
 const Today = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);

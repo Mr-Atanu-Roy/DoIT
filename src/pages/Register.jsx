@@ -13,7 +13,7 @@ const Register = () => {
                     <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 mb-4 shadow-sm">
                         <Rocket className="w-6 h-6" />
                     </div>
-                    <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Join JustDOIT</h1>
+                    <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Join DOIT</h1>
                     <p className="text-slate-500 mt-2 text-sm">Start your productivity journey today.</p>
                 </div>
 
