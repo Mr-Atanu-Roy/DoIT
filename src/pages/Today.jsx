@@ -3,7 +3,7 @@ import Sidebar from '../components/layout/Sidebar';
 import Header from '../components/layout/Header';
 import TodoList from '../components/todo/TodoList';
 import Button from '../components/ui/Button';
-import { Plus, ChevronDown, Filter } from 'lucide-react';
+import { Plus, ChevronDown, Filter, CalendarClock } from 'lucide-react';
 
 const Today = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -16,7 +16,8 @@ const Today = () => {
             completed: false,
             priority: 'high',
             createdAt: Date.now() - 86400000,
-            postponeCount: 0
+            postponeCount: 0,
+            scheduledFor: 'today'
         },
         {
             id: 2,
@@ -25,7 +26,8 @@ const Today = () => {
             completedOn: Date.now() - 4000000,
             priority: 'medium',
             createdAt: Date.now() - 172800000,
-            postponeCount: 1
+            postponeCount: 1,
+            scheduledFor: 'today'
         },
         {
             id: 3,
@@ -34,13 +36,21 @@ const Today = () => {
             completedOn: Date.now() - 2000000,
             priority: 'low',
             createdAt: Date.now() - 259200000,
-            postponeCount: 0
+            postponeCount: 0,
+            scheduledFor: 'today'
         },
     ]);
+
+    const priority = [
+        { id: 'high', label: 'High', color: 'bg-rose-500', hover: 'hover:bg-rose-50 text-rose-600' },
+        { id: 'medium', label: 'Medium', color: 'bg-amber-500', hover: 'hover:bg-amber-50 text-amber-600' },
+        { id: 'low', label: 'Low', color: 'bg-emerald-500', hover: 'hover:bg-emerald-50 text-emerald-600' }
+    ];
 
     // Task Input State
     const [newTask, setNewTask] = useState("");
     const [newPriority, setNewPriority] = useState("medium");
+    const [isScheduledForToday, setIsScheduledForToday] = useState(false);
     const [isInputExpanded, setIsInputExpanded] = useState(false);
 
     // Filter State
@@ -48,7 +58,7 @@ const Today = () => {
     const [filterPriority, setFilterPriority] = useState("all"); // 'all', 'high', 'medium', 'low'
 
     const addTodo = (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
         if (!newTask.trim()) return;
 
         const newTodo = {
@@ -57,14 +67,22 @@ const Today = () => {
             completed: false,
             priority: newPriority,
             createdAt: Date.now(),
-            postponeCount: 0
+            postponeCount: 0,
+            scheduledFor: isScheduledForToday ? 'today' : 'tomorrow'
         };
 
         setTodos([newTodo, ...todos]);
         setNewTask("");
         setNewPriority("medium");
-        // Keep expanded for rapid entry, or collapse? Let's keep it expanded if they are typing, but maybe collapse on submit?
-        // User requirements said "Keep fast task entry". Resetting focus might be good.
+        setIsScheduledForToday(false);
+        // Keep expanded logic can stay as is
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            addTodo();
+        }
     };
 
     const toggleTodo = (id) => {
@@ -172,21 +190,24 @@ const Today = () => {
                         >
                             <div className="p-2">
                                 <div className="relative">
+
                                     <input
                                         type="text"
                                         placeholder="Add a new task..."
-                                        className="w-full pl-4 pr-16 py-3 rounded-xl bg-transparent outline-none text-lg text-slate-700 placeholder:text-slate-400"
+                                        className="w-full pl-6 pr-20 py-4 rounded-2xl bg-white outline-none text-lg placeholder:text-slate-400"
                                         value={newTask}
                                         onChange={(e) => setNewTask(e.target.value)}
                                     />
+
                                     <div className="absolute right-1 top-1 bottom-1">
+                                        {/* Add Button */}
                                         <Button
                                             type="submit"
                                             variant="primary"
-                                            className="h-full aspect-square rounded-lg p-0 flex items-center justify-center shadow-sm hover:shadow-md cursor-pointer"
+                                            className="h-12 w-12 rounded-xl p-0 flex items-center justify-center shadow-md hover:shadow-lg cursor-pointer"
                                             disabled={!newTask.trim()}
                                         >
-                                            <Plus className="w-6 h-6" />
+                                            <Plus className="w-8 h-8" />
                                         </Button>
                                     </div>
                                 </div>
@@ -196,33 +217,59 @@ const Today = () => {
                                     overflow-hidden transition-all duration-300 ease-in-out
                                     ${isInputExpanded ? 'max-h-20 opacity-100 mt-2' : 'max-h-0 opacity-0'}
                                 `}>
-                                    <div className="flex items-center gap-2 px-2 pb-2">
-                                        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Priority:</span>
-                                        <div className="flex items-center gap-1">
-                                            {[
-                                                { id: 'high', label: 'High', color: 'bg-rose-500', hover: 'hover:bg-rose-50 text-rose-600' },
-                                                { id: 'medium', label: 'Medium', color: 'bg-amber-500', hover: 'hover:bg-amber-50 text-amber-600' },
-                                                { id: 'low', label: 'Low', color: 'bg-emerald-500', hover: 'hover:bg-emerald-50 text-emerald-600' }
-                                            ].map((priority) => (
-                                                <button
-                                                    key={priority.id}
-                                                    type="button"
-                                                    onClick={() => setNewPriority(priority.id)}
-                                                    className={`
-                                                        px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 border cursor-pointer
-                                                        ${newPriority === priority.id
-                                                            ? `bg-slate-800 text-white border-slate-800 shadow-sm`
-                                                            : `bg-white border-slate-200 text-slate-500 hover:border-slate-300 ${priority.hover}`
-                                                        }
-                                                    `}
-                                                >
-                                                    <div className="flex items-center gap-1.5">
-                                                        <div className={`w-1.5 h-1.5 rounded-full ${newPriority === priority.id ? 'bg-white' : priority.color}`} />
-                                                        {priority.label}
-                                                    </div>
-                                                </button>
-                                            ))}
+                                    <div className="flex items-center justify-between px-2 pb-2">
+                                        <div className="flex items-center sm:gap-2">
+                                            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                                                <span className="hidden sm:inline">Priority:</span>
+                                            </span>
+                                            <div className="flex items-center gap-1">
+                                                {priority.map((priority) => (
+                                                    <button
+                                                        key={priority.id}
+                                                        type="button"
+                                                        onClick={() => setNewPriority(priority.id)}
+                                                        className={`
+                                                            px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 border cursor-pointer
+                                                            ${newPriority === priority.id
+                                                                ? `bg-slate-800 text-white border-slate-800 shadow-sm`
+                                                                : `bg-white border-slate-200 text-slate-500 hover:border-slate-300 ${priority.hover}`
+                                                            }
+                                                        `}
+                                                    >
+                                                        <div className="flex items-center gap-1.5">
+                                                            <div
+                                                                className={`w-1.5 h-1.5 rounded-full ${newPriority === priority.id ? 'bg-white' : priority.color
+                                                                    }`}
+                                                            />
+                                                            {priority.id === 'medium' ? (
+                                                                <>
+                                                                    <span className="sm:inline hidden">Medium</span>
+                                                                    <span className="sm:hidden inline">Mid</span>
+                                                                </>
+                                                            ) : (
+                                                                priority.label
+                                                            )}
+                                                        </div>
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
+
+                                        {/* Schedule Today Button */}
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsScheduledForToday(!isScheduledForToday)}
+                                            className={`
+                                                flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all border cursor-pointer select-none
+                                                ${isScheduledForToday
+                                                    ? 'bg-emerald-100 text-emerald-700 border-emerald-200 shadow-sm'
+                                                    : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50'
+                                                }
+                                            `}
+                                        >
+                                            <CalendarClock className={`w-3.5 h-3.5 ${isScheduledForToday ? 'text-emerald-600' : 'text-slate-400'}`} />
+                                            Today
+                                        </button>
                                     </div>
                                 </div>
                             </div>
