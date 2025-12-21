@@ -1,7 +1,6 @@
 import { Menu, Bell, Search } from 'lucide-react';
-import Button from '../ui/Button';
 
-const Header = ({ onMenuClick, title = "Dashboard" }) => {
+const Header = ({ onMenuClick, title = "Today" }) => {
     return (
         <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-30 px-4 sm:px-6 flex items-center justify-between">
             <div className="flex items-center gap-4">

@@ -1,12 +1,12 @@
 import { NavLink } from 'react-router-dom';
-import { Rocket, LayoutDashboard, Calendar, CheckSquare, Settings, X, LogOut } from 'lucide-react';
+import { Rocket, CalendarClock, CheckSquare, Notebook, Settings, X, LogOut } from 'lucide-react';
 import { useState } from 'react';
 
 const Sidebar = ({ isOpen, onClose }) => {
     const navItems = [
-        { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-        { icon: Calendar, label: 'Today', path: '/today' },
+        { icon: CalendarClock, label: 'Today', path: '/' },
         { icon: CheckSquare, label: 'Completed', path: '/completed' },
+        { icon: Notebook, label: 'Notes', path: '/notes' },
         { icon: Settings, label: 'Settings', path: '/settings' },
     ];
 

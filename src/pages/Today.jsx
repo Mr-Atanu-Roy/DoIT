@@ -5,7 +5,7 @@ import TodoList from '../components/todo/TodoList';
 import Button from '../components/ui/Button';
 import { Plus } from 'lucide-react';
 
-const Dashboard = () => {
+const Today = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [todos, setTodos] = useState([
         { id: 1, text: "Review project requirements", completed: false },
@@ -91,4 +91,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default Today;
