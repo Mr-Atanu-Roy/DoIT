@@ -28,6 +28,6 @@ dist-ssr
 .env.local
 
 #antigravity
-.agent
+.agent/
 
 
