@@ -30,9 +30,8 @@ const Sidebar = ({ isOpen, onClose }) => {
                     {/* Logo */}
                     <div className="h-16 flex items-center px-6 border-b border-slate-50">
                         <div className="flex items-center gap-2 font-bold text-xl text-slate-800 tracking-tight">
-                            <span>Just</span>
                             <Rocket className="w-5 h-5 text-emerald-500 animate-pulse" />
-                            <span>DOIT</span>
+                            <span>DoIT</span>
                         </div>
                         <button
                             onClick={onClose}

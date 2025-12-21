@@ -52,12 +52,24 @@ const Dashboard = () => {
                     {/* Add Task Section */}
                     <div className="mb-8">
                         <h2 className="text-2xl font-bold text-slate-800 mb-6">Today's Tasks</h2>
+                    </div>
 
-                        <form onSubmit={addTodo} className="relative group">
+                    {/* Task List */}
+                    <div className="pb-24">
+                        <TodoList
+                            todos={todos}
+                            onToggle={toggleTodo}
+                            onDelete={deleteTodo}
+                        />
+                    </div>
+
+                    {/* Sticky Add Task Section */}
+                    <div className="sticky bottom-6 mt-auto">
+                        <form onSubmit={addTodo} className="relative group shadow-2xl rounded-2xl">
                             <input
                                 type="text"
-                                placeholder="What needs to be done?"
-                                className="w-full pl-6 pr-32 py-4 rounded-2xl bg-white border-2 border-transparent shadow-sm hover:shadow-md focus:shadow-lg focus:border-emerald-500/50 outline-none transition-all duration-300 text-lg placeholder:text-slate-400"
+                                placeholder="Add a new task..."
+                                className="w-full pl-6 pr-20 py-4 rounded-2xl bg-white border-2 border-slate-200 shadow-lg focus:shadow-xl focus:border-emerald-500 outline-none transition-all duration-300 text-lg placeholder:text-slate-400"
                                 value={newTask}
                                 onChange={(e) => setNewTask(e.target.value)}
                             />
@@ -65,21 +77,14 @@ const Dashboard = () => {
                                 <Button
                                     type="submit"
                                     variant="primary"
-                                    className="h-full rounded-xl px-6 font-semibold shadow-none hover:shadow-none"
+                                    className="h-full w-14 rounded-xl p-0 flex items-center justify-center shadow-md hover:shadow-lg"
                                     disabled={!newTask.trim()}
                                 >
-                                    Add Task <Plus className="w-5 h-5 ml-1" />
+                                    <Plus className="w-6 h-6" />
                                 </Button>
                             </div>
                         </form>
                     </div>
-
-                    {/* Task List */}
-                    <TodoList
-                        todos={todos}
-                        onToggle={toggleTodo}
-                        onDelete={deleteTodo}
-                    />
                 </main>
             </div>
         </div>
