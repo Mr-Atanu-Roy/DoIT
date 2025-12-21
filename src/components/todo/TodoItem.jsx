@@ -6,7 +6,7 @@ const TodoItem = ({ todo, onToggle, onDelete }) => {
             className={`
         group flex items-center justify-between p-4 mb-3 rounded-xl border transition-all duration-200
         ${todo.completed
-                    ? 'bg-slate-50 border-slate-100'
+                    ? 'bg-emerald-50 border-slate-100'
                     : 'bg-white border-slate-200 hover:border-emerald-300 hover:shadow-sm'
                 }
       `}
