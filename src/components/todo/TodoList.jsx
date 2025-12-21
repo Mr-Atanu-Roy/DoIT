@@ -1,7 +1,7 @@
 import TodoItem from './TodoItem';
 import { PackageOpen } from 'lucide-react';
 
-const TodoList = ({ todos, onToggle, onDelete }) => {
+const TodoList = ({ todos, onToggle, onDelete, onSelect }) => {
     if (todos.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-12 text-center animate-bounce-in">
@@ -24,6 +24,7 @@ const TodoList = ({ todos, onToggle, onDelete }) => {
                     todo={todo}
                     onToggle={onToggle}
                     onDelete={onDelete}
+                    onSelect={onSelect}
                 />
             ))}
         </div>

@@ -1,6 +1,6 @@
 import { Trash2, CheckCircle2, Circle } from 'lucide-react';
 
-const TodoItem = ({ todo, onToggle, onDelete }) => {
+const TodoItem = ({ todo, onToggle, onDelete, onSelect }) => {
     // Format timestamp helper
     const formatDate = (timestamp) => {
         if (!timestamp) return '';
@@ -35,7 +35,10 @@ const TodoItem = ({ todo, onToggle, onDelete }) => {
         >
             <div className="flex items-center gap-3 flex-1 min-w-0">
                 <button
-                    onClick={() => onToggle(todo.id)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onToggle(todo.id);
+                    }}
                     className={`
             shrink-0 transition-colors duration-200 focus:outline-none
             ${todo.completed ? 'text-emerald-500' : 'text-slate-300 hover:text-emerald-400'}
@@ -48,13 +51,13 @@ const TodoItem = ({ todo, onToggle, onDelete }) => {
                     )}
                 </button>
 
-                <div className="flex flex-col gap-1 min-w-0 flex-1">
+                <div className="flex flex-col gap-1 min-w-0 flex-1 group/text">
                     <span
                         className={`
               font-medium text-sm sm:text-base truncate transition-all duration-200 select-none cursor-pointer
-              ${todo.completed ? 'text-slate-400 line-through' : 'text-slate-700'}
+              ${todo.completed ? 'text-slate-400 line-through' : 'text-slate-700 group-hover/text:text-emerald-600'}
             `}
-                        onClick={() => onToggle(todo.id)}
+                        onClick={() => onSelect(todo)}
                     >
                         {todo.text}
                     </span>

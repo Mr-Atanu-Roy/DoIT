@@ -3,6 +3,7 @@ import Sidebar from '../components/layout/Sidebar';
 import Header from '../components/layout/Header';
 import TodoList from '../components/todo/TodoList';
 import Button from '../components/ui/Button';
+import TaskDetailsPanel from '../components/todo/TaskDetailsPanel';
 import { Plus, ChevronDown, Filter, CalendarClock } from 'lucide-react';
 
 const Today = () => {
@@ -56,6 +57,12 @@ const Today = () => {
     // Filter State
     const [filterStatus, setFilterStatus] = useState("active"); // 'all', 'active', 'completed'
     const [filterPriority, setFilterPriority] = useState("all"); // 'all', 'high', 'medium', 'low'
+
+    const [selectedTodo, setSelectedTodo] = useState(null);
+
+    const handleUpdateTodo = (updatedTodo) => {
+        setTodos(todos.map(t => t.id === updatedTodo.id ? updatedTodo : t));
+    };
 
     const addTodo = (e) => {
         if (e) e.preventDefault();
@@ -174,6 +181,15 @@ const Today = () => {
                             todos={filteredTodos}
                             onToggle={toggleTodo}
                             onDelete={deleteTodo}
+                            onSelect={setSelectedTodo}
+                        />
+
+                        {/* Task Details Panel */}
+                        <TaskDetailsPanel
+                            todo={selectedTodo}
+                            isOpen={!!selectedTodo}
+                            onClose={() => setSelectedTodo(null)}
+                            onSave={handleUpdateTodo}
                         />
                     </div>
 
