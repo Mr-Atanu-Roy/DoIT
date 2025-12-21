@@ -70,7 +70,7 @@ const TaskDetailsPanel = ({ todo, isOpen, onClose, onSave }) => {
                         onClick={handleClose}
                         className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-full transition-colors"
                     >
-                        <X className="w-5 h-5" />
+                        <X className="w-5 h-5 cursor-pointer" />
                     </button>
                 </div>
 
@@ -186,14 +186,14 @@ const TaskDetailsPanel = ({ todo, isOpen, onClose, onSave }) => {
                     <Button
                         variant="secondary"
                         onClick={handleClose}
-                        className="px-6"
+                        className="cursor-pointer px-6"
                     >
                         Cancel
                     </Button>
                     <Button
                         variant="primary"
                         onClick={handleSave}
-                        className="px-8 shadow-lg shadow-emerald-500/20"
+                        className="cursor-pointer px-8 shadow-lg shadow-emerald-500/20"
                     >
                         Save Changes
                     </Button>
