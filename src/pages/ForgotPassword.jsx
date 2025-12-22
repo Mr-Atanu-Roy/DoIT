@@ -1,7 +1,19 @@
 import ForgotPasswordForm from '../components/auth/ForgotPasswordForm';
 import { LockKeyhole } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import { Navigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
+    //redirect to home if user is already logged in
+    const { user } = useAuth();
+    if (user) {
+        if (!user.email_confirmed_at) {
+            return <Navigate to="/verify-email" />;
+        }
+        return <Navigate to="/" />;
+    }
+
+
     return (
         <div className="min-h-screen flex items-center justify-center p-4 bg-slate-50 relative overflow-hidden">
             {/* Background Decorative Elements */}

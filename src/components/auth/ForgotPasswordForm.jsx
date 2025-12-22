@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, ArrowLeft, Send } from 'lucide-react';
+import { Mail, ArrowLeft, Send, X } from 'lucide-react';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
+import { authService } from '../../services/supabase/auth.service';
 
 const ForgotPasswordForm = () => {
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [isSent, setIsSent] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
 
     const validate = () => {
         if (!email) {
@@ -26,28 +28,36 @@ const ForgotPasswordForm = () => {
         if (error) setError('');
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!validate()) return;
 
         setIsLoading(true);
-        // Simulate API call
-        setTimeout(() => {
-            setIsLoading(false);
+        setError('');
+
+        try {
+            await authService.sendPasswordResetEmail(email);
             setIsSent(true);
-        }, 1500);
+            setIsSuccess(true);
+        } catch (err) {
+            setIsSent(true);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     if (isSent) {
         return (
             <div className="text-center space-y-4 animate-bounce-in">
-                <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600 mb-4">
-                    <Send size={32} />
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto ${isSuccess ? 'bg-emerald-100 text-emerald-600' : 'bg-red-100 text-red-600'} mb-4`}>
+                    {
+                        isSuccess ? <Send size={32} /> : <X size={32} />
+                    }
                 </div>
-                <h3 className="text-lg font-semibold text-slate-800">Check your email</h3>
+                <h3 className="text-lg font-semibold text-slate-800">{isSuccess ? "Check your email" : "Failed to Send"}</h3>
                 <p className="text-slate-600 text-sm">
-                    We've sent password reset instructions to your email address.
+                    {isSuccess ? "We've sent password reset instructions to your email address." : "Failed to send email. Please try again later"}
                 </p>
                 <div className="pt-4">
                     <Link to="/login">

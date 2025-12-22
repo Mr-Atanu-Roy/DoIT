@@ -2,6 +2,7 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Loader2, Rocket } from 'lucide-react';
+import { authService } from '../services/supabase/auth.service';
 
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
@@ -22,6 +23,11 @@ const ProtectedRoute = ({ children }) => {
     if (!user) {
         // Redirect to login page but save the attempted location
         return <Navigate to="/login" state={{ from: location }} replace />;
+    }
+
+    // Check for email verification
+    if (user && !authService.isEmailVerified(user)) {
+        return <Navigate to="/verify-email" replace />;
     }
 
     return children;

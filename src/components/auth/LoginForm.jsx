@@ -14,6 +14,7 @@ const LoginForm = () => {
     const [authError, setAuthError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isVerificationPending, setIsVerificationPending] = useState(false);
     const navigate = useNavigate();
 
     const validate = () => {
@@ -58,6 +59,11 @@ const LoginForm = () => {
 
             if (error) {
                 setAuthError(error.message || 'Failed to sign in');
+
+                // check if error is "Email not confirmed"
+                if (error.message === 'Email not confirmed') {
+                    setIsVerificationPending(true);
+                }
                 setIsLoading(false);
             } else {
                 // Success, redirect happens automatically via auth state change listener usually, 
@@ -75,6 +81,11 @@ const LoginForm = () => {
             {authError && (
                 <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg">
                     {authError}
+                    {isVerificationPending && (
+                        <Link to="/verify-email" className="ml-2 font-medium underline text-red-600">
+                            Verify Email
+                        </Link>
+                    )}
                 </div>
             )}
 

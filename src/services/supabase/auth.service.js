@@ -68,5 +68,41 @@ export const authService = {
         if (!supabase) return { data: { subscription: { unsubscribe: () => { } } } };
 
         return supabase.auth.onAuthStateChange(callback);
+    },
+
+    /**
+     * Resend verification email
+     * @param {string} email
+     * @returns {Promise<{data, error}>}
+     */
+    async resendVerificationEmail(email) {
+        if (!supabase) return { error: { message: "Supabase not initialized" } };
+
+        return await supabase.auth.resend({
+            type: 'signup',
+            email,
+        });
+    },
+
+    /**
+     * Check if user email is verified
+     * @param {object} user
+     * @returns {boolean}
+     */
+    isEmailVerified(user) {
+        return !!user?.email_confirmed_at;
+    },
+
+    /**
+     * Send password reset email
+     * @param {string} email
+     * @returns {Promise<{data, error}>}
+     */
+    async sendPasswordResetEmail(email) {
+        if (!supabase) return { error: { message: "Supabase not initialized" } };
+
+        return await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${window.location.origin}/reset-password`,
+        });
     }
 };

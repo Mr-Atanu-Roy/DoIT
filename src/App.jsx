@@ -4,6 +4,8 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import Today from './pages/Today';
 import Logout from './pages/Logout';
+import VerifyEmail from './pages/VerifyEmail';
+import ResetPassword from './pages/ResetPassword';
 import ProtectedRoute from './routes/ProtectedRoute';
 
 function App() {
@@ -14,6 +16,8 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/logout" element={<Logout />} />
+                <Route path="/verify-email" element={<VerifyEmail />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/" element={
                     <ProtectedRoute>
                         <Today />

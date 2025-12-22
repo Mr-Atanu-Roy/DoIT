@@ -8,6 +8,9 @@ const Login = () => {
     //redirect to home if user is already logged in
     const { user } = useAuth();
     if (user) {
+        if (!user.email_confirmed_at) {
+            return <Navigate to="/verify-email" />;
+        }
         return <Navigate to="/" />;
     }
 
