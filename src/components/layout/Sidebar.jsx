@@ -1,6 +1,5 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { Rocket, CalendarClock, CheckSquare, Notebook, Settings, X, LogOut } from 'lucide-react';
-import { useState } from 'react';
 
 const Sidebar = ({ isOpen, onClose }) => {
     const navItems = [
@@ -72,9 +71,9 @@ const Sidebar = ({ isOpen, onClose }) => {
                                 <p className="text-sm font-medium text-slate-900 truncate">John Doe</p>
                                 <p className="text-xs text-slate-500 truncate">Welcome</p>
                             </div>
-                            <button className="text-slate-400 hover:text-rose-500 transition-colors">
+                            <Link to="/logout" className="cursor-pointer text-slate-400 hover:text-rose-500 transition-colors" title="Log Out">
                                 <LogOut size={18} />
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 </div>

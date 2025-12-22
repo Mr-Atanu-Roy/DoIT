@@ -1,26 +1,80 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Send } from 'lucide-react';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
+import { authService } from '../../services/supabase/auth.service';
 
 const RegisterForm = () => {
+    const [formData, setFormData] = useState({
+        fullName: '',
+        email: '',
+        password: ''
+    });
+    const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isSent, setIsSent] = useState(false);
-    const navigate = useNavigate();
+    const [authError, setAuthError] = useState('');
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setIsLoading(true);
-        // Simulate API call
-        setTimeout(() => {
-            setIsLoading(false);
-            setIsSent(true);
-        }, 1500);
+    const validate = () => {
+        const newErrors = {};
+
+        if (!formData.fullName) {
+            newErrors.fullName = 'Full Name is required';
+        } else if (formData.fullName.trim().length < 3) {
+            newErrors.fullName = 'Full Name must be at least 3 characters';
+        }
+
+        if (!formData.email) {
+            newErrors.email = 'Email is required';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            newErrors.email = 'Please enter a valid email address';
+        }
+
+        if (!formData.password) {
+            newErrors.password = 'Password is required';
+        } else if (formData.password.length < 6) {
+            newErrors.password = 'Password must be at least 6 characters';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+        // Clear errors on change
+        if (errors[name]) {
+            setErrors(prev => ({ ...prev, [name]: '' }));
+        }
+        if (authError) setAuthError('');
+    };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!validate()) return;
+
+        setIsLoading(true);
+        setAuthError('');
+
+        try {
+            const { error } = await authService.register(formData.email, formData.password, formData.fullName);
+
+            if (error) {
+                setAuthError(error.message || 'Failed to register');
+                setIsLoading(false);
+            } else {
+                setIsLoading(false);
+                setIsSent(true);
+            }
+        } catch (err) {
+            setAuthError('An unexpected error occurred');
+            setIsLoading(false);
+        }
+    };
 
     if (isSent) {
         return (
@@ -30,12 +84,12 @@ const RegisterForm = () => {
                 </div>
                 <h3 className="text-lg font-semibold text-slate-800">Check your email</h3>
                 <p className="text-slate-600 text-sm">
-                    We've sent password reset instructions to your email address.
+                    We've sent a confirmation link to your email address.
                 </p>
                 <div className="pt-4">
                     <Link to="/login">
                         <Button variant="secondary" className="w-full cursor-pointer">
-                            Resend Email
+                            Back to Sign In
                         </Button>
                     </Link>
                 </div>
@@ -45,19 +99,33 @@ const RegisterForm = () => {
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
+            {authError && (
+                <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg">
+                    {authError}
+                </div>
+            )}
+
             <Input
                 label="Full Name"
                 type="text"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
                 placeholder="John Doe"
                 icon={User}
+                error={errors.fullName}
                 required
             />
 
             <Input
                 label="Email"
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="john@example.com"
                 icon={Mail}
+                error={errors.email}
                 required
             />
 
@@ -65,8 +133,12 @@ const RegisterForm = () => {
                 <Input
                     label="Password"
                     type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
                     placeholder="Create a password"
                     icon={Lock}
+                    error={errors.password}
                     required
                 />
                 <button
@@ -78,16 +150,14 @@ const RegisterForm = () => {
                 </button>
             </div>
 
-
-
-            <Button type="submit" variant="primary" className="w-full py-2.5 mt-2 cursor-pointer" isLoading={isLoading}>
+            <Button type="submit" variant="primary" className="w-full py-2.5 mt-2 cursor-pointer" isLoading={isLoading} disabled={isLoading}>
                 Create Account <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
 
             <div className="text-center text-sm text-slate-500 mt-4">
                 Already have an account?{' '}
                 <Link to="/login" className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors cursor-pointer">
-                    Sign in
+                    Log in
                 </Link>
             </div>
         </form>

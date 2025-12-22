@@ -5,11 +5,32 @@ import Input from '../ui/Input';
 import Button from '../ui/Button';
 
 const ForgotPasswordForm = () => {
+    const [email, setEmail] = useState('');
+    const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [isSent, setIsSent] = useState(false);
 
+    const validate = () => {
+        if (!email) {
+            setError('Email is required');
+            return false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            setError('Please enter a valid email address');
+            return false;
+        }
+        return true;
+    };
+
+    const handleChange = (e) => {
+        setEmail(e.target.value);
+        if (error) setError('');
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        if (!validate()) return;
+
         setIsLoading(true);
         // Simulate API call
         setTimeout(() => {
@@ -44,8 +65,11 @@ const ForgotPasswordForm = () => {
             <Input
                 label="Email Address"
                 type="email"
+                value={email}
+                onChange={handleChange}
                 placeholder="Enter your email"
                 icon={Mail}
+                error={error}
                 required
             />
 
@@ -53,7 +77,7 @@ const ForgotPasswordForm = () => {
                 Enter the email address associated with your account and we'll send you a link to reset your password.
             </p>
 
-            <Button type="submit" variant="primary" className="w-full py-2.5 cursor-pointer" isLoading={isLoading}>
+            <Button type="submit" variant="primary" className="w-full py-2.5 cursor-pointer" isLoading={isLoading} disabled={isLoading}>
                 Send Reset Link
             </Button>
 
