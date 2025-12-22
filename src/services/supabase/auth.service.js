@@ -11,7 +11,7 @@ export const authService = {
      */
     async register(email, password, fullName) {
         if (!supabase) return { error: { message: "Supabase not initialized" } };
-        console.log(email, password, fullName);
+
         return await supabase.auth.signUp({
             email,
             password,

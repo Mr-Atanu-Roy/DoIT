@@ -19,6 +19,7 @@ export const AuthProvider = ({ children }) => {
         async function getSession() {
             setLoading(true);
             const { data, error } = await authService.getCurrentSession();
+
             if (mounted) {
                 if (error) {
                     console.error("Error getting session:", error);

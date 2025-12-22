@@ -1,7 +1,7 @@
 
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Rocket } from 'lucide-react';
 
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
@@ -10,7 +10,11 @@ const ProtectedRoute = ({ children }) => {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
+                <div className="flex items-center gap-2 font-extrabold text-4xl tracking-tight">
+                    <Rocket className="w-7 h-7 text-emerald-600 animate-float" />
+                    <span className="bg-linear-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent">DoIT</span>
+                </div>
+                <Loader2 className="ml-3 w-8 h-8 text-emerald-500 animate-spin" />
             </div>
         );
     }

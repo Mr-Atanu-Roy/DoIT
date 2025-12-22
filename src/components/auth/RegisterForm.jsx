@@ -84,12 +84,12 @@ const RegisterForm = () => {
                 </div>
                 <h3 className="text-lg font-semibold text-slate-800">Check your email</h3>
                 <p className="text-slate-600 text-sm">
-                    We've sent a confirmation link to your email address.
+                    We've sent a confirmation link to your email address. You need to verify your account before logging in.
                 </p>
                 <div className="pt-4">
                     <Link to="/login">
                         <Button variant="secondary" className="w-full cursor-pointer">
-                            Back to Sign In
+                            Log In Now
                         </Button>
                     </Link>
                 </div>

@@ -1,7 +1,16 @@
 import RegisterForm from '../components/auth/RegisterForm';
 import { Rocket } from 'lucide-react';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 const Register = () => {
+
+    //redirect to home if user is already logged in
+    const { user } = useAuth();
+    if (user) {
+        return <Navigate to="/" />;
+    }
+
     return (
         <div className="min-h-screen flex items-center justify-center p-4 bg-slate-50 relative overflow-hidden">
             {/* Background Decorative Elements */}

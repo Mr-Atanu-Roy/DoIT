@@ -73,7 +73,7 @@ const ForgotPasswordForm = () => {
                 required
             />
 
-            <p className="text-sm text-slate-500 leading-relaxed">
+            <p className="text-sm text-slate-500 leading-relaxed text-center">
                 Enter the email address associated with your account and we'll send you a link to reset your password.
             </p>
 
