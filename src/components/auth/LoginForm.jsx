@@ -123,10 +123,9 @@ const LoginForm = () => {
             </div>
 
             <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2 cursor-pointer group">
-                    <input type="checkbox" className="cursor-pointer w-4 h-4 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500 transition-colors" />
-                    <span className="text-slate-500 group-hover:text-slate-700 transition-colors">Remember me</span>
-                </label>
+                <Link to="/forgot-password" className="font-medium text-emerald-500 hover:text-emerald-600 transition-colors">
+                    Passwordless login
+                </Link>
                 <Link to="/forgot-password" className="font-medium text-emerald-500 hover:text-emerald-600 transition-colors">
                     Forgot password?
                 </Link>

@@ -12,9 +12,6 @@ const VerifyEmail = () => {
 
     //redirect to home if user is already logged in
     if (user) {
-        if (!user.email_confirmed_at) {
-            return <Navigate to="/verify-email" />;
-        }
         return <Navigate to="/" />;
     }
 
@@ -101,7 +98,7 @@ const VerifyEmail = () => {
                         isLoading={isLoading}
                         disabled={isLoading}
                     >
-                        Resend Verification Email
+                        Send Verification Email
                     </Button>
                 </form>
 
