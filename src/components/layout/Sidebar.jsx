@@ -1,7 +1,23 @@
 import { NavLink, Link } from 'react-router-dom';
 import { Rocket, CalendarClock, CheckSquare, Notebook, Settings, X, LogOut } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
 const Sidebar = ({ isOpen, onClose }) => {
+    const { user } = useAuth();
+
+    // Get user name from metadata or fallback to email part or "User"
+    const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || "User";
+
+    // Get initials
+    const getInitials = (name) => {
+        if (!name) return 'U';
+        const parts = name.trim().split(' ');
+        if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+        return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+    };
+
+    const initials = getInitials(displayName);
+
     const navItems = [
         { icon: CalendarClock, label: 'Today', path: '/' },
         { icon: CheckSquare, label: 'Completed', path: '/completed' },
@@ -61,14 +77,14 @@ const Sidebar = ({ isOpen, onClose }) => {
                         ))}
                     </nav>
 
-                    {/* Footer User Profile (Static for now) */}
+                    {/* Footer User Profile */}
                     <div className="p-4 border-t border-slate-50">
                         <div className="flex items-center gap-3 p-3 rounded-lg bg-slate-50 border border-slate-100">
-                            <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-xs">
-                                JD
+                            <div className="w-8 h-8 min-w-[32px] rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-xs select-none">
+                                {initials}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-slate-900 truncate">John Doe</p>
+                                <p className="text-sm font-medium text-slate-900 truncate" title={displayName}>{displayName}</p>
                                 <p className="text-xs text-slate-500 truncate">Welcome</p>
                             </div>
                             <Link to="/logout" className="cursor-pointer text-slate-400 hover:text-rose-500 transition-colors" title="Log Out">
