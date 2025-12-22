@@ -104,5 +104,21 @@ export const authService = {
         return await supabase.auth.resetPasswordForEmail(email, {
             redirectTo: `${window.location.origin}/reset-password`,
         });
-    }
+    },
+
+    /**
+     * Send passwordless login link: magic link
+     * @param {string} email
+     * @returns {Promise<{data, error}>}
+     */
+    async sendPasswordlessLoginLink(email) {
+        if (!supabase) return { error: { message: "Supabase not initialized" } };
+
+        return await supabase.auth.signInWithOtp({
+            email
+        })
+
+    },
+
+
 };

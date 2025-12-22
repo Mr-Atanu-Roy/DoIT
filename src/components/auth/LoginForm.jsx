@@ -15,6 +15,8 @@ const LoginForm = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isVerificationPending, setIsVerificationPending] = useState(false);
+    const [isMagicLinkMode, setIsMagicLinkMode] = useState(false); // Toggle state
+    const [magicLinkSent, setMagicLinkSent] = useState(false); // Success state
     const navigate = useNavigate();
 
     const validate = () => {
@@ -26,10 +28,13 @@ const LoginForm = () => {
             newErrors.email = 'Please enter a valid email address';
         }
 
-        if (!formData.password) {
-            newErrors.password = 'Password is required';
-        } else if (formData.password.length < 6) {
-            newErrors.password = 'Password must be at least 6 characters';
+        // Only validate password if NOT in magic link mode
+        if (!isMagicLinkMode) {
+            if (!formData.password) {
+                newErrors.password = 'Password is required';
+            } else if (formData.password.length < 6) {
+                newErrors.password = 'Password must be at least 6 characters';
+            }
         }
 
         setErrors(newErrors);
@@ -55,26 +60,64 @@ const LoginForm = () => {
         setAuthError('');
 
         try {
-            const { error } = await authService.logIn(formData.email, formData.password);
+            if (isMagicLinkMode) {
+                // Magic Link Flow
+                const { error } = await authService.sendPasswordlessLoginLink(formData.email);
 
-            if (error) {
-                setAuthError(error.message || 'Failed to sign in');
-
-                // check if error is "Email not confirmed"
-                if (error.message === 'Email not confirmed') {
-                    setIsVerificationPending(true);
+                if (error) {
+                    setAuthError(error.message || 'Failed to send login link');
+                } else {
+                    setMagicLinkSent(true);
                 }
                 setIsLoading(false);
             } else {
-                // Success, redirect happens automatically via auth state change listener usually, 
-                // or we can manually redirect. Detailed plan says "On success -> redirect to Today".
-                navigate('/');
+                // Password Flow
+                const { error } = await authService.logIn(formData.email, formData.password);
+
+                if (error) {
+                    setAuthError(error.message || 'Failed to sign in');
+
+                    // check if error is "Email not confirmed"
+                    if (error.message === 'Email not confirmed') {
+                        setIsVerificationPending(true);
+                    }
+                    setIsLoading(false);
+                } else {
+                    navigate('/');
+                }
             }
         } catch (err) {
             setAuthError('An unexpected error occurred');
             setIsLoading(false);
         }
     };
+
+    if (magicLinkSent) {
+        return (
+            <div className="text-center space-y-4 animate-bounce-in">
+                <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600 mb-4">
+                    <Mail size={32} />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-800">Check your email</h3>
+                <p className="text-slate-600 text-sm">
+                    We've sent a magic login link to <strong>{formData.email}</strong>.
+                    <br />Click the link to sign in instantly.
+                </p>
+                <div className="pt-4">
+                    <Button
+                        variant="secondary"
+                        className="w-full cursor-pointer"
+                        onClick={() => {
+                            setMagicLinkSent(false);
+                            setFormData(prev => ({ ...prev, email: '' }));
+                        }}
+                    >
+                        Use a different email
+                    </Button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -89,6 +132,21 @@ const LoginForm = () => {
                 </div>
             )}
 
+            {/* Mode Toggle */}
+            <div className="flex justify-center pb-2">
+                <button
+                    type="button"
+                    onClick={() => {
+                        setIsMagicLinkMode(!isMagicLinkMode);
+                        setAuthError('');
+                        setErrors({});
+                    }}
+                    className="text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors cursor-pointer"
+                >
+                    {isMagicLinkMode ? 'Log in with password instead' : 'Log in with magic link instead'}
+                </button>
+            </div>
+
             <Input
                 label="Email"
                 type="email"
@@ -101,38 +159,43 @@ const LoginForm = () => {
                 required
             />
 
-            <div className="relative">
-                <Input
-                    label="Password"
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="Enter your password"
-                    icon={Lock}
-                    error={errors.password}
-                    required
-                />
-                <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-[39px] text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
-                >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-            </div>
+            {!isMagicLinkMode && (
+                <div className="relative">
+                    <Input
+                        label="Password"
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="Enter your password"
+                        icon={Lock}
+                        error={errors.password}
+                        required
+                    />
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-[39px] text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                    >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                </div>
+            )}
 
-            <div className="flex items-center justify-between text-sm">
-                <Link to="/forgot-password" className="font-medium text-emerald-500 hover:text-emerald-600 transition-colors">
-                    Passwordless login
-                </Link>
-                <Link to="/forgot-password" className="font-medium text-emerald-500 hover:text-emerald-600 transition-colors">
-                    Forgot password?
-                </Link>
-            </div>
+            {!isMagicLinkMode && (
+                <div className="flex items-center justify-end text-sm">
+                    <Link to="/forgot-password" className="font-medium text-emerald-500 hover:text-emerald-600 transition-colors">
+                        Forgot password?
+                    </Link>
+                </div>
+            )}
 
             <Button type="submit" variant="primary" className="w-full py-2.5 cursor-pointer" isLoading={isLoading} disabled={isLoading}>
-                Log In <ArrowRight className="w-4 h-4 ml-2" />
+                {isMagicLinkMode ? (
+                    <>Send Login Link <ArrowRight className="w-4 h-4 ml-2" /></>
+                ) : (
+                    <>Log In <ArrowRight className="w-4 h-4 ml-2" /></>
+                )}
             </Button>
 
             <div className="text-center text-sm text-slate-500">
