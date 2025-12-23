@@ -4,7 +4,7 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { authService } from '../../services/supabase/auth.service';
-import { validate } from '../../utils/validators';
+import { validate } from '../../utils/auth.validators';
 
 const LoginForm = () => {
     const [formData, setFormData] = useState({

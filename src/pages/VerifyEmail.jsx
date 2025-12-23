@@ -6,7 +6,7 @@ import Input from '../components/ui/Input';
 import { authService } from '../services/supabase/auth.service';
 import { useAuth } from '../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
-import { validate } from '../utils/validators';
+import { validate } from '../utils/auth.validators';
 
 const VerifyEmail = () => {
     const { user } = useAuth();

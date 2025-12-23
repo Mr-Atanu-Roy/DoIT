@@ -4,7 +4,7 @@ import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Send } from 'lucide-react';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { authService } from '../../services/supabase/auth.service';
-import { validate } from '../../utils/validators';
+import { validate } from '../../utils/auth.validators';
 
 const RegisterForm = () => {
     const [formData, setFormData] = useState({

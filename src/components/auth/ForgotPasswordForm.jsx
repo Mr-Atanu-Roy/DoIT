@@ -4,7 +4,7 @@ import { Mail, ArrowLeft, Send, X } from 'lucide-react';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { authService } from '../../services/supabase/auth.service';
-import { validate } from '../../utils/validators';
+import { validate } from '../../utils/auth.validators';
 
 const ForgotPasswordForm = () => {
     const [email, setEmail] = useState('');
