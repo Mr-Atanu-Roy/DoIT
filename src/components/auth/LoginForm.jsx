@@ -4,6 +4,7 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { authService } from '../../services/supabase/auth.service';
+import { validate } from '../../utils/validators';
 
 const LoginForm = () => {
     const [formData, setFormData] = useState({
@@ -19,21 +20,19 @@ const LoginForm = () => {
     const [magicLinkSent, setMagicLinkSent] = useState(false); // Success state
     const navigate = useNavigate();
 
-    const validate = () => {
+    const validateForm = () => {
         const newErrors = {};
 
-        if (!formData.email) {
-            newErrors.email = 'Email is required';
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            newErrors.email = 'Please enter a valid email address';
+        const emailValidation = validate.email(formData.email);
+        if (!emailValidation.status) {
+            newErrors.email = emailValidation.message;
         }
 
         // Only validate password if NOT in magic link mode
         if (!isMagicLinkMode) {
-            if (!formData.password) {
-                newErrors.password = 'Password is required';
-            } else if (formData.password.length < 6) {
-                newErrors.password = 'Password must be at least 6 characters';
+            const passwordValidation = validate.password(formData.password);
+            if (!passwordValidation.status) {
+                newErrors.password = passwordValidation.message;
             }
         }
 
@@ -54,7 +53,7 @@ const LoginForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!validate()) return;
+        if (!validateForm()) return;
 
         setIsLoading(true);
         setAuthError('');

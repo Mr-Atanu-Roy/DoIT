@@ -4,6 +4,7 @@ import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Send } from 'lucide-react';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { authService } from '../../services/supabase/auth.service';
+import { validate } from '../../utils/validators';
 
 const RegisterForm = () => {
     const [formData, setFormData] = useState({
@@ -17,25 +18,22 @@ const RegisterForm = () => {
     const [isSent, setIsSent] = useState(false);
     const [authError, setAuthError] = useState('');
 
-    const validate = () => {
+    const validateForm = () => {
         const newErrors = {};
 
-        if (!formData.fullName) {
-            newErrors.fullName = 'Full Name is required';
-        } else if (formData.fullName.trim().length < 3) {
-            newErrors.fullName = 'Full Name must be at least 3 characters';
+        const fullNameValidation = validate.fullName(formData.fullName);
+        if (!fullNameValidation.status) {
+            newErrors.fullName = fullNameValidation.message;
         }
 
-        if (!formData.email) {
-            newErrors.email = 'Email is required';
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            newErrors.email = 'Please enter a valid email address';
+        const emailValidation = validate.email(formData.email);
+        if (!emailValidation.status) {
+            newErrors.email = emailValidation.message;
         }
 
-        if (!formData.password) {
-            newErrors.password = 'Password is required';
-        } else if (formData.password.length < 6) {
-            newErrors.password = 'Password must be at least 6 characters';
+        const passwordValidation = validate.password(formData.password);
+        if (!passwordValidation.status) {
+            newErrors.password = passwordValidation.message;
         }
 
         setErrors(newErrors);
@@ -55,7 +53,7 @@ const RegisterForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!validate()) return;
+        if (!validateForm()) return;
 
         setIsLoading(true);
         setAuthError('');

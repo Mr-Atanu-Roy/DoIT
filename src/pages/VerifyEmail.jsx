@@ -6,6 +6,7 @@ import Input from '../components/ui/Input';
 import { authService } from '../services/supabase/auth.service';
 import { useAuth } from '../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
+import { validate } from '../utils/validators';
 
 const VerifyEmail = () => {
     const { user } = useAuth();
@@ -16,6 +17,7 @@ const VerifyEmail = () => {
     }
 
     const location = useLocation();
+    const [error, setError] = useState('');
     const [email, setEmail] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState(null); // { type: 'success' | 'error', text: '' }
@@ -29,9 +31,19 @@ const VerifyEmail = () => {
         }
     }, [user, location]);
 
+
+    const validateForm = () => {
+        const emailValidation = validate.email(email);
+        if (!emailValidation.status) {
+            setError(emailValidation.message);
+        }
+
+        return emailValidation.status;
+    };
+
     const handleResend = async (e) => {
         e.preventDefault();
-        if (!email) return;
+        if (!validateForm()) return;
 
         setIsLoading(true);
         setMessage(null);
@@ -84,6 +96,7 @@ const VerifyEmail = () => {
                         label="Email Address"
                         type="email"
                         value={email}
+                        error={error}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email"
                         icon={Mail}

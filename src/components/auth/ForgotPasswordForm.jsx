@@ -4,6 +4,7 @@ import { Mail, ArrowLeft, Send, X } from 'lucide-react';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { authService } from '../../services/supabase/auth.service';
+import { validate } from '../../utils/validators';
 
 const ForgotPasswordForm = () => {
     const [email, setEmail] = useState('');
@@ -12,15 +13,13 @@ const ForgotPasswordForm = () => {
     const [isSent, setIsSent] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
-    const validate = () => {
-        if (!email) {
-            setError('Email is required');
-            return false;
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            setError('Please enter a valid email address');
-            return false;
+    const validateForm = () => {
+        const emailValidation = validate.email(email);
+        if (!emailValidation.status) {
+            setError(emailValidation.message);
         }
-        return true;
+
+        return emailValidation.status;
     };
 
     const handleChange = (e) => {
@@ -31,7 +30,7 @@ const ForgotPasswordForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!validate()) return;
+        if (!validateForm()) return;
 
         setIsLoading(true);
         setError('');
