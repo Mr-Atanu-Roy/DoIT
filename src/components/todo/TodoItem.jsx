@@ -60,8 +60,8 @@ const TodoItem = ({ todo, markTask, deleteTask, rescheduleTaskDay, getSelectedTa
 
                 <div className="flex flex-col gap-1 min-w-0 flex-1 group/text">
                     <span
-                        className={`
-              font-medium text-sm sm:text-base truncate transition-all duration-200 select-none cursor-pointer
+                        className={` text-wrap
+              font-medium text-xs sm:text-base truncate transition-all duration-200 select-none cursor-pointer
               ${todo.is_completed ? 'text-slate-400 line-through' : 'text-slate-700 group-hover/text:text-emerald-600'}
             `}
                         onClick={() => getSelectedTask(todo.id)}
@@ -74,7 +74,7 @@ const TodoItem = ({ todo, markTask, deleteTask, rescheduleTaskDay, getSelectedTa
 
                         {/* Priority Indicator */}
                         {todo.priority && (
-                            <div className="flex items-center gap-1.5">
+                            <div className="flex items-center gap-1.5 text-xs sm:text-base">
                                 <div className={`w-2 h-2 rounded-full ${getPriorityColor(todo.priority)}`} />
                                 {todo.priority == '2' ? (
                                     <>
@@ -90,7 +90,7 @@ const TodoItem = ({ todo, markTask, deleteTask, rescheduleTaskDay, getSelectedTa
                         <span className="w-1 h-1 rounded-full bg-slate-300"></span>
 
                         {/* Date & Time Metadata */}
-                        <div className="flex items-center gap-1 text-slate-400">
+                        <div className="flex items-center gap-1 text-slate-400 text-xs sm:text-base">
                             <span className="md:hidden">
                                 {todo.is_completed ? 'Done' : 'Added'} {formatDate(todo.is_completed ? todo.completed_on : todo.created_at, { showTime: false, showYear: false })}
                             </span>
@@ -103,7 +103,7 @@ const TodoItem = ({ todo, markTask, deleteTask, rescheduleTaskDay, getSelectedTa
                         {todo.postpone_count > 0 && (
                             <>
                                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                                <div className={`flex items-center gap-1 ${todo.postpone_count > 3 ? 'text-red-600' : 'text-amber-600'}`}>
+                                <div className={`text-xs sm:text-base flex items-center gap-1 ${todo.postpone_count > 3 ? 'text-red-600' : 'text-amber-600'}`}>
                                     {/* Mobile View: Icon + Count */}
                                     <span className="flex items-center gap-1 md:hidden">
                                         <RotateCcw className="w-3 h-3" />
@@ -128,17 +128,17 @@ const TodoItem = ({ todo, markTask, deleteTask, rescheduleTaskDay, getSelectedTa
                     const isToday = taskDate === today;
                     rescheduleTaskDay(todo.id, isToday ? 1 : 0);
                 }}
-                className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity p-2 text-slate-400 hover:text-amber-500 hover:bg-amber-50 rounded-lg focus:opacity-100 focus:outline-none ml-2"
+                className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity p-1.5 sm:p-2 text-slate-400 hover:text-amber-500 hover:bg-amber-50 rounded-lg focus:opacity-100 focus:outline-none ml-2"
                 aria-label="Reschedule task"
             >
-                <RotateCcw className="w-5 h-5 cursor-pointer" />
+                <RotateCcw className="w-3.5 h-3.5 sm:w-5 sm:h-5 cursor-pointer" />
             </button>
             <button
                 onClick={() => deleteTask(todo.id)}
-                className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg focus:opacity-100 focus:outline-none ml-2"
+                className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity p-1.5 sm:p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg focus:opacity-100 focus:outline-none ml-2"
                 aria-label="Delete task"
             >
-                <Trash2 className="w-5 h-5 cursor-pointer" />
+                <Trash2 className="w-3.5 h-3.5 sm:w-5 sm:h-5 cursor-pointer" />
             </button>
         </div>
     );
