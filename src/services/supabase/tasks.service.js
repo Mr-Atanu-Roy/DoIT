@@ -124,7 +124,7 @@ export const taskService = {
     * @param {int} dayOffset: 1: next day, -1: prev day
     * @returns {Promise<{data, error}>}
     */
-    async moveTaskToNextDay(taskId, dayOffset = 1) {
+    async moveTaskDay(taskId, dayOffset = 1) {
         if (!supabase) return { error: { message: "Supabase not initialized" } };
 
         return await supabase
@@ -138,54 +138,52 @@ export const taskService = {
     },
 
     /**
-    * Filter task by priority
-    * @param {int} priority: 1, 2, 3
-    * @returns {Promise<{data, error}>}
-    */
+  * Get tasks with multiple filters
+  * @param {object} filters
+  * @returns {Promise<{data, error}>}
+  */
+    async getFilteredTasks({
+        priority = null,
+        is_completed = null,
+        title = null,
+        dayOffset = null,
+        from,
+        to
+    }) {
+        if (!supabase) {
+            return { error: { message: "Supabase not initialized" } };
+        }
 
-    async filterTasksByPriority(priority, from, to) {
-        if (!supabase) return { error: { message: "Supabase not initialized" } };
-
-        return await supabase
+        let query = supabase
             .from('tasks')
             .select('*')
-            .eq('priority', priority)
-            .order('created_at', { ascending: false })
-            .range(from, to);
-    },
+            .order('created_at', { ascending: false });
 
-    /**
-    * Filter task by completed status
-    * @param {boolean} is_completed
-    * @returns {Promise<{data, error}>}
-    */
-    async filterTasksByCompleted(is_completed, from, to) {
-        if (!supabase) return { error: { message: "Supabase not initialized" } };
+        // filter by priority (1, 2, 3)
+        if (priority !== null) {
+            query = query.eq('priority', priority);
+        }
 
-        return await supabase
-            .from('tasks')
-            .select('*')
-            .eq('is_completed', is_completed)
-            .order('created_at', { ascending: false })
-            .range(from, to);
-    },
+        // filter by completion status
+        if (is_completed !== null) {
+            query = query.eq('is_completed', is_completed);
+        }
 
+        // filter by scheduled date
+        if (dayOffset !== null) {
+            const scheduled_for = getDateTimeString(dayOffset);
+            query = query.eq('scheduled_for', scheduled_for);
+        }
 
-    /**
-    * Filter task by title (case insenitive): used for search
-    * @param {string} query
-    * @returns {Promise<{data, error}>}
-    */
-    async filterTaskByTitle(query, from, to) {
-        if (!supabase) return { error: { message: "Supabase not initialized" } };
+        // filter by title (case-insensitive search)
+        if (title !== null) {
+            query = query.ilike('title', `%${title}%`);
+        }
 
-        return await supabase
-            .from('tasks')
-            .select('*')
-            .ilike('title', `%${query}%`)
-            .order('created_at', { ascending: false })
-            .range(from, to);
-    },
+        // pagination
+        query = query.range(from, to);
 
+        return await query;
+    }
 
 }
