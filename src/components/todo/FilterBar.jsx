@@ -36,7 +36,6 @@ const FilterBar = ({ filters, setFilters, day, setDay }) => {
                                 value={filters.status}
                                 onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
                             >
-                                <option value="all">All Status</option>
                                 <option value="active">Active</option>
                                 <option value="completed">Completed</option>
                             </select>
@@ -50,7 +49,6 @@ const FilterBar = ({ filters, setFilters, day, setDay }) => {
                                 value={filters.priority}
                                 onChange={(e) => setFilters(prev => ({ ...prev, priority: e.target.value }))}
                             >
-                                <option value="all">Any Priority</option>
                                 <option value="1">High Priority</option>
                                 <option value="2">Medium Priority</option>
                                 <option value="3">Low Priority</option>

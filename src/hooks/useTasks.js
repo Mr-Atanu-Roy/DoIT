@@ -238,8 +238,9 @@ export const useTasks = (day = 0) => {
             // Task no longer belongs to this day: Remove from list
             setTasks(prev => prev.filter(task => task.id !== taskId));
 
-            toast.success(`Task rescheduled ${dayOffset === 1 ? "to tomorrow" : (dayOffset == -1 ? "to yesterday" : "")}`);
+            toast.success(`Task rescheduled for ${dayOffset === 1 ? "tomorrow" : "today"}`);
         } catch (err) {
+            console.log(err);
             toast.error(err.message || "Failed to reschedule task");
         }
     };

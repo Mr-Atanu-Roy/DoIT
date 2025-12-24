@@ -183,25 +183,25 @@ const TaskDetailsPanel = ({
                             <div className="border-t border-slate-100 pt-6">
                                 <h3 className="text-sm font-bold text-slate-800 mb-4">Metadata</h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div className="flex items-start gap-3 p-3 rounded-lg bg-slate-50">
-                                        <RotateCcw className="w-4 h-4 text-slate-400 mt-0.5" />
+                                    <div className={`flex items-start gap-3 p-3 rounded-lg ${selectedTask.postpone_count ? 'bg-rose-50' : 'bg-slate-50'}`}>
+                                        <RotateCcw className={`w-4 h-4 ${selectedTask.postpone_count ? 'text-rose-400' : 'text-slate-400'}`} />
                                         <div>
-                                            <p className="text-xs font-semibold text-slate-500">Postponed</p>
-                                            <p className="text-sm text-slate-700">{selectedTask.postpone_count || 0} times</p>
+                                            <p className={`text-xs font-semibold ${selectedTask.postpone_count ? 'text-rose-600' : 'text-slate-500'}`}>Postponed</p>
+                                            <p className={`text-sm ${selectedTask.postpone_count ? 'text-rose-700' : 'text-slate-700'}`}>{selectedTask.postpone_count || 0} times</p>
                                         </div>
                                     </div>
 
-                                    <div className={`flex items-start gap-3 p-3 rounded-lg ${formData.is_completed ? 'bg-emerald-50' : 'bg-red-50'}`}>
+                                    <div className={`flex items-start gap-3 p-3 rounded-lg ${formData.is_completed ? 'bg-emerald-50' : 'bg-amber-50'}`}>
                                         {
                                             formData.is_completed ? (
                                                 <CircleCheckBig className={`w-4 h-4 text-emerald-400`} />
                                             ) : (
-                                                <CircleX className={`w-4 h-4 text-red-400`} />
+                                                <CircleX className={`w-4 h-4 text-amber-400`} />
                                             )
                                         }
                                         <div>
-                                            <p className={`text-xs font-semibold ${formData.is_completed ? 'text-emerald-600' : 'text-red-600'}`}>Completed On</p>
-                                            <p className={`text-sm ${formData.is_completed ? 'text-emerald-800' : 'text-red-800'}`}>{
+                                            <p className={`text-xs font-semibold ${formData.is_completed ? 'text-emerald-600' : 'text-amber-600'}`}>Completed On</p>
+                                            <p className={`text-sm ${formData.is_completed ? 'text-emerald-800' : 'text-amber-800'}`}>{
                                                 formData.is_completed ? formatDate(formData.completed_on) : 'Pending'
                                             }</p>
                                         </div>
@@ -217,7 +217,7 @@ const TaskDetailsPanel = ({
                                     <div className="flex items-start gap-3 p-3 rounded-lg bg-slate-50">
                                         <Clock className="w-4 h-4 text-slate-400 mt-0.5" />
                                         <div>
-                                            <p className="text-xs font-semibold text-slate-500">Updated At</p>
+                                            <p className="text-xs font-semibold text-slate-500">Last Updated</p>
                                             <p className="text-sm text-slate-700">{formatDate(selectedTask.updated_at)}</p>
                                         </div>
                                     </div>

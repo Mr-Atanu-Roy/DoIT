@@ -8,9 +8,12 @@ import VerifyEmail from './pages/VerifyEmail';
 import ResetPassword from './pages/ResetPassword';
 import ProtectedRoute from './routes/ProtectedRoute';
 
+import { Toaster } from 'react-hot-toast';
+
 function App() {
     return (
         <Router>
+            <Toaster position="top-right" />
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />

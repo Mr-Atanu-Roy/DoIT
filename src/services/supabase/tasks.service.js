@@ -127,13 +127,10 @@ export const taskService = {
     async moveTaskDay(taskId, dayOffset = 1) {
         if (!supabase) return { error: { message: "Supabase not initialized" } };
 
-        return await supabase
-            .from('tasks')
-            .update({
-                scheduled_for: getDateTimeString(dayOffset)
-            })
-            .eq('id', taskId)
-            .select()
+        return await supabase.rpc("move_task_day", {
+            p_task_id: taskId,
+            p_day_offset: dayOffset,
+        });
 
     },
 
@@ -154,6 +151,7 @@ export const taskService = {
             return { error: { message: "Supabase not initialized" } };
         }
 
+        //get the tasks: then order by date
         let query = supabase
             .from('tasks')
             .select('*')

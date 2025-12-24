@@ -1,24 +1,20 @@
 import { Trash2, CircleCheckBig, Circle, RotateCcw } from 'lucide-react';
 
 const TodoItem = ({ todo, markTask, deleteTask, rescheduleTaskDay, getSelectedTask }) => {
-    // Format timestamp helper
+    // Helper to format date
     const formatDate = (timestamp) => {
-        if (!timestamp) return '';
-        return new Date(timestamp).toLocaleString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
+        if (!timestamp) return 'Never';
+        return new Date(timestamp).toLocaleString('en-GB', {
+            day: 'numeric', month: 'short',
+            hour: '2-digit', minute: '2-digit', hour12: false
         });
     };
 
     // Format just date helper
     const formatJustDate = (timestamp) => {
         if (!timestamp) return '';
-        return new Date(timestamp).toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric'
+        return new Date(timestamp).toLocaleDateString('en-GB', {
+            day: 'numeric', month: 'short'
         });
     };
 
@@ -82,38 +78,33 @@ const TodoItem = ({ todo, markTask, deleteTask, rescheduleTaskDay, getSelectedTa
 
                     {/* Metadata Footer */}
                     <div className="flex items-center gap-3 text-xs text-slate-400 flex-wrap">
-                        {/* Active Task Metadata */}
-                        {!todo.is_completed && (
-                            <>
-                                {/* Priority Indicator */}
-                                {todo.priority && (
-                                    <div className="flex items-center gap-1.5">
-                                        <div className={`w-2 h-2 rounded-full ${getPriorityColor(todo.priority)}`} />
-                                        <span className="capitalize">{getPriorityLabel(todo.priority)}</span>
-                                    </div>
+
+                        {/* Priority Indicator */}
+                        {todo.priority && (
+                            <div className="flex items-center gap-1.5">
+                                <div className={`w-2 h-2 rounded-full ${getPriorityColor(todo.priority)}`} />
+                                {todo.priority == '2' ? (
+                                    <>
+                                        <span className="sm:inline hidden">Medium</span>
+                                        <span className="sm:hidden inline">Mid</span>
+                                    </>
+                                ) : (
+                                    <span className="capitalize">{getPriorityLabel(todo.priority)}</span>
                                 )}
-
-                                <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                            </>
+                            </div>
                         )}
 
-                        {/* Common Metadata: Created At */}
-                        <span className="md:hidden text-slate-400">
-                            {formatJustDate(todo.created_at || Date.now())}
-                        </span>
-                        <span className="hidden md:inline text-slate-400">
-                            Created {formatDate(todo.created_at || Date.now())}
-                        </span>
+                        <span className="w-1 h-1 rounded-full bg-slate-300"></span>
 
-                        {/* Completed Task Metadata */}
-                        {todo.is_completed && todo.completed_at && (
-                            <>
-                                <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                                <span className="text-emerald-600 font-medium">
-                                    Completed {formatDate(todo.completed_at)}
-                                </span>
-                            </>
-                        )}
+                        {/* Date & Time Metadata */}
+                        <div className="flex items-center gap-1 text-slate-400">
+                            <span className="md:hidden">
+                                {todo.is_completed ? 'Done' : 'Added'} {formatJustDate(todo.is_completed ? todo.completed_on : todo.created_at)}
+                            </span>
+                            <span className="hidden md:inline">
+                                {todo.is_completed ? 'Done' : 'Added'} {formatDate(todo.is_completed ? todo.completed_on : todo.created_at)}
+                            </span>
+                        </div>
 
                         {/* Procrastination Indicator */}
                         {todo.postpone_count > 0 && (
