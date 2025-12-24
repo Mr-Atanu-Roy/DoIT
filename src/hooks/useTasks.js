@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 const PAGE_SIZE = 10;
 
 
-export const useTasks = (day = 0) => {
+export const useTasks = (day = 0, defaultStatus = 'active') => {
     // --------------------
     // STATE
     // --------------------
@@ -26,7 +26,7 @@ export const useTasks = (day = 0) => {
 
     //for task filters
     const [filters, setFilters] = useState({
-        status: "active",   // all | active | completed
+        status: defaultStatus,   // all | active | completed
         priority: "all",    // all | 1 | 2 | 3
         search: "",         // title search
     });
@@ -34,6 +34,38 @@ export const useTasks = (day = 0) => {
     // --------------------
     // CORE FETCH
     // --------------------
+
+    //!USE: only in all-tasks page
+    const getAllTasks = useCallback(async (title = '', status = 'all', pageIndex = 0) => {
+        try {
+            setLoading(true);
+
+            const from = pageIndex * PAGE_SIZE;
+            const to = from + PAGE_SIZE - 1;
+
+            // Map status string to boolean/null
+            let isCompleted = null;
+            if (status === 'active') isCompleted = false;
+            if (status === 'completed') isCompleted = true;
+
+            if (status === 'completed') isCompleted = true;
+
+            const { data, error } = await taskService.getAllTasks(title || null, isCompleted, from, to);
+
+            if (error) throw error;
+
+            setTasks(prev =>
+                pageIndex > 0 ? [...prev, ...(data || [])] : (data || [])
+            );
+
+            setHasMore((data || []).length === PAGE_SIZE);
+            setPage(pageIndex);
+        } catch (err) {
+            toast.error("Failed to load tasks err:0");
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
     const getSelectedTask = async (taskId) => {
         if (!taskId) return;
@@ -249,7 +281,9 @@ export const useTasks = (day = 0) => {
     // EFFECT
     // --------------------
     useEffect(() => {
-        fetchInitialTasks();
+        if (day !== 'ALL') {
+            fetchInitialTasks();
+        }
     }, [day, filters, fetchInitialTasks]);
 
     // --------------------
@@ -262,6 +296,7 @@ export const useTasks = (day = 0) => {
         loading,
         selectedTaskLoading,
         hasMore,
+        page, // Export page state
         filters,
         setFilters,
 
@@ -273,7 +308,9 @@ export const useTasks = (day = 0) => {
         deleteTask,
         rescheduleTaskDay,
         getSelectedTask,
-        setSelectedTask, // Exposed for clearing selection as per user request
+        setSelectedTask,
+
+        getAllTasks,      //! USE: only in all-tasks page
     };
 };
 

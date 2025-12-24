@@ -80,21 +80,34 @@ export const taskService = {
 
 
     /**
-    * Get all tasks for a user scheduled for today/tomorrow
-    * @param {int} dayOffset: 0: today, 1: tomorrow
+    * ! USE this only in all-tasks page: for getting all taks & filter by is_completed
+    * Get all tasks for a user with is_completed filter
+    * @param {string} title: search by title
+    * @param {boolean} is_completed: true: completed, false: not completed, null: all
     * @returns {Promise<{data, error}>}
     */
-    async getAllTasks(dayOffset = 0, from, to) {
+    async getAllTasks(title = null, is_completed = null, from, to) {
         if (!supabase) return { error: { message: "Supabase not initialized" } };
 
-        return await supabase
+        //get the tasks: then order by date
+        let query = supabase
             .from('tasks')
             .select('*')
-            .eq(
-                'scheduled_for', getDateTimeString(dayOffset)
-            )
-            .order('created_at', { ascending: false })
-            .range(from, to);
+            .order('created_at', { ascending: false });
+
+        // filter by title (case-insensitive search)
+        if (title !== null) {
+            query = query.ilike('title', `%${title}%`);
+        }
+
+        // filter by completed if given
+        if (is_completed !== null) {
+            query = query.eq('is_completed', is_completed);
+        }
+        // pagination
+        query = query.range(from, to);
+
+        return await query;
     },
 
 
