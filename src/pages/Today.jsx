@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import Header from '../components/layout/Header';
 import TodoList from '../components/todo/TodoList';
@@ -31,6 +31,10 @@ const Today = () => {
         deleteTask,
     } = useTasks(day);
 
+    const handleSearch = useCallback((query) => {
+        setFilters(prev => ({ ...prev, search: query }));
+    }, [setFilters]);
+
     return (
         <div className="flex bg-slate-50 min-h-screen">
             <Sidebar
@@ -39,7 +43,10 @@ const Today = () => {
             />
 
             <div className="flex-1 flex flex-col lg:ml-64 min-h-screen transition-all duration-300">
-                <Header onMenuClick={() => setIsSidebarOpen(true)} />
+                <Header
+                    onMenuClick={() => setIsSidebarOpen(true)}
+                    onSearch={handleSearch}
+                />
 
                 <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full relative">
                     {/* Header & Filters */}
