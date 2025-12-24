@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { taskService } from "../services/supabase/tasks.service";
 import { validateTasks } from "../utils/tasks.validators";
 import toast from "react-hot-toast";
@@ -92,10 +92,10 @@ export const useTasks = (day = 0) => {
     // --------------------
     // PUBLIC FETCH METHODS
     // --------------------
-    const fetchInitialTasks = () => {
+    const fetchInitialTasks = useCallback(() => {
         setHasMore(true);
         fetchTasks(0, false);
-    };
+    }, [fetchTasks]);
 
     const fetchMoreTasks = () => {
         if (loading || !hasMore) return;
@@ -106,10 +106,28 @@ export const useTasks = (day = 0) => {
     // MUTATIONS
     // --------------------
     const addTask = async (payload) => {
+
+        //title required
         const titleCheck = validateTasks.title(payload.title);
         if (!titleCheck.status) {
             toast.error(titleCheck.message);
             return;
+        }
+
+        //priority required
+        const priorityCheck = validateTasks.priority(payload.priority);
+        if (!priorityCheck.status) {
+            toast.error(priorityCheck.message);
+            return;
+        }
+
+        //validate description if given
+        if (payload.description) {
+            const descriptionCheck = validateTasks.description(payload.description);
+            if (!descriptionCheck.status) {
+                toast.error(descriptionCheck.message);
+                return;
+            }
         }
 
         try {
@@ -254,6 +272,7 @@ export const useTasks = (day = 0) => {
         deleteTask,
         rescheduleTaskDay,
         getSelectedTask,
+        setSelectedTask, // Exposed for clearing selection as per user request
     };
 };
 

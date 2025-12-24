@@ -14,7 +14,7 @@ export const taskService = {
     * @param {string} scheduled_for
     * @returns {Promise<{data, error}>}
     */
-    async createTask({ title, description, priority, scheduled_for }) {
+    async createTask({ title, description, priority, dayOffset = 1 }) {
         if (!supabase) return { error: { message: "Supabase not initialized" } };
 
         return await supabase
@@ -24,7 +24,7 @@ export const taskService = {
                     title,
                     description,
                     priority,
-                    scheduled_for
+                    scheduled_for: getDateTimeString(dayOffset)
                 },
             ])
             .select()

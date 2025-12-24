@@ -2,33 +2,44 @@ import { useState } from 'react';
 import { Plus, CalendarClock } from 'lucide-react';
 import Button from '../ui/Button';
 
-const AddTaskInput = ({ onAddTask }) => {
+const AddTaskInput = ({ addTask }) => {
     // Task Input State
     const [newTask, setNewTask] = useState("");
-    const [newPriority, setNewPriority] = useState("medium");
-    const [isScheduledForToday, setIsScheduledForToday] = useState(false);
+    const [newPriority, setNewPriority] = useState("2"); // Default Medium (2)
+
+    // Default scheduled: today if before 6 PM (18:00), else tomorrow
+    const [isScheduledForToday, setIsScheduledForToday] = useState(() => {
+        return new Date().getHours() < 18;
+    });
+
+    // Input Expanded State
     const [isInputExpanded, setIsInputExpanded] = useState(false);
 
-    const priority = [
-        { id: 'high', label: 'High', color: 'bg-rose-500', hover: 'hover:bg-rose-50 text-rose-600' },
-        { id: 'medium', label: 'Medium', color: 'bg-amber-500', hover: 'hover:bg-amber-50 text-amber-600' },
-        { id: 'low', label: 'Low', color: 'bg-emerald-500', hover: 'hover:bg-emerald-50 text-emerald-600' }
+    // Priority Options and colors
+    const priorityOptions = [
+        { id: '1', label: 'High', color: 'bg-rose-500', hover: 'hover:bg-rose-50 text-rose-600' },
+        { id: '2', label: 'Medium', color: 'bg-amber-500', hover: 'hover:bg-amber-50 text-amber-600' },
+        { id: '3', label: 'Low', color: 'bg-emerald-500', hover: 'hover:bg-emerald-50 text-emerald-600' }
     ];
 
     const handleSubmit = (e) => {
         if (e) e.preventDefault();
         if (!newTask.trim()) return;
 
-        onAddTask({
-            text: newTask,
-            priority: newPriority,
-            scheduledFor: isScheduledForToday ? 'today' : 'tomorrow'
+        // Calculate dayOffset for service
+        const dayOffset = isScheduledForToday ? 0 : 1;
+
+        addTask({
+            title: newTask,
+            priority: Number(newPriority),
+            dayOffset: dayOffset,
+            is_completed: false
         });
 
         setNewTask("");
-        setNewPriority("medium");
-        setIsScheduledForToday(false);
-        // Keep expanded logic can stay as is
+        setNewPriority("2");
+        // Reset schedule logic based on current time
+        setIsScheduledForToday(new Date().getHours() < 18);
     };
 
     return (
@@ -40,7 +51,6 @@ const AddTaskInput = ({ onAddTask }) => {
                     ${isInputExpanded ? 'shadow-emerald-500/10 border-emerald-500/50' : ''}
                 `}
                 onFocus={() => setIsInputExpanded(true)}
-            // Click outside listener could be added here to collapse, but native focus blur might be enough if handled carefully
             >
                 <div className="p-2">
                     <div className="relative">
@@ -48,7 +58,7 @@ const AddTaskInput = ({ onAddTask }) => {
                         <input
                             type="text"
                             placeholder="Add a new task..."
-                            className="w-full pl-6 pr-20 py-4 rounded-2xl bg-white outline-none text-lg placeholder:text-slate-400"
+                            className="w-full pl-6 pr-20 md:py-4 py-2 pb-2.5 rounded-2xl bg-white outline-none text-lg placeholder:text-slate-400"
                             value={newTask}
                             onChange={(e) => setNewTask(e.target.value)}
                         />
@@ -58,10 +68,13 @@ const AddTaskInput = ({ onAddTask }) => {
                             <Button
                                 type="submit"
                                 variant="primary"
-                                className="h-12 w-12 rounded-xl p-0 flex items-center justify-center shadow-md hover:shadow-lg cursor-pointer"
+                                className="h-10 w-10 rounded-xl p-0 flex items-center justify-center shadow-md hover:shadow-lg cursor-pointer"
                                 disabled={!newTask.trim()}
+                                style={{
+                                    "padding": "5.5px"
+                                }}
                             >
-                                <Plus className="w-8 h-8" />
+                                <Plus className="w-10 h-10" />
                             </Button>
                         </div>
                     </div>
@@ -77,7 +90,7 @@ const AddTaskInput = ({ onAddTask }) => {
                                     <span className="hidden sm:inline">Priority:</span>
                                 </span>
                                 <div className="flex items-center gap-1">
-                                    {priority.map((p) => (
+                                    {priorityOptions.map((p) => (
                                         <button
                                             key={p.id}
                                             type="button"
@@ -95,7 +108,7 @@ const AddTaskInput = ({ onAddTask }) => {
                                                     className={`w-1.5 h-1.5 rounded-full ${newPriority === p.id ? 'bg-white' : p.color
                                                         }`}
                                                 />
-                                                {p.id === 'medium' ? (
+                                                {p.id === '2' ? (
                                                     <>
                                                         <span className="sm:inline hidden">Medium</span>
                                                         <span className="sm:hidden inline">Mid</span>

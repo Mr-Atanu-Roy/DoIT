@@ -1,6 +1,6 @@
-import { Trash2, CheckCircle2, Circle } from 'lucide-react';
+import { Trash2, CircleCheckBig, Circle, RotateCcw } from 'lucide-react';
 
-const TodoItem = ({ todo, onToggle, onDelete, onSelect }) => {
+const TodoItem = ({ todo, markTask, deleteTask, rescheduleTaskDay, getSelectedTask }) => {
     // Format timestamp helper
     const formatDate = (timestamp) => {
         if (!timestamp) return '';
@@ -13,21 +13,39 @@ const TodoItem = ({ todo, onToggle, onDelete, onSelect }) => {
         });
     };
 
+    // Format just date helper
+    const formatJustDate = (timestamp) => {
+        if (!timestamp) return '';
+        return new Date(timestamp).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric'
+        });
+    };
+
     // Priority color helper
     const getPriorityColor = (priority) => {
-        switch (priority?.toLowerCase()) {
-            case 'high': return 'bg-rose-500';
-            case 'medium': return 'bg-amber-500';
-            case 'low': return 'bg-emerald-500';
+        switch (String(priority)) { // Ensure string comparison
+            case '1': return 'bg-rose-500'; // High
+            case '2': return 'bg-amber-500'; // Medium
+            case '3': return 'bg-emerald-500'; // Low
             default: return 'bg-slate-400';
         }
     };
+
+    const getPriorityLabel = (priority) => {
+        switch (String(priority)) {
+            case '1': return 'High';
+            case '2': return 'Medium';
+            case '3': return 'Low';
+            default: return 'Normal';
+        }
+    }
 
     return (
         <div
             className={`
         group flex items-center justify-between p-4 mb-3 rounded-xl border transition-all duration-200
-        ${todo.completed
+        ${todo.is_completed
                     ? 'bg-emerald-50 border-slate-100'
                     : 'bg-white border-slate-200 hover:border-emerald-300 hover:shadow-sm'
                 }
@@ -37,15 +55,15 @@ const TodoItem = ({ todo, onToggle, onDelete, onSelect }) => {
                 <button
                     onClick={(e) => {
                         e.stopPropagation();
-                        onToggle(todo.id);
+                        markTask(todo.id, !todo.is_completed);
                     }}
                     className={`
             shrink-0 transition-colors duration-200 focus:outline-none
-            ${todo.completed ? 'text-emerald-500' : 'text-slate-300 hover:text-emerald-400'}
+            ${todo.is_completed ? 'text-emerald-500' : 'text-slate-300 hover:text-emerald-400'}
           `}
                 >
-                    {todo.completed ? (
-                        <CheckCircle2 className="w-6 h-6 cursor-pointer" />
+                    {todo.is_completed ? (
+                        <CircleCheckBig className="w-6 h-6 cursor-pointer" />
                     ) : (
                         <Circle className="w-6 h-6 cursor-pointer" />
                     )}
@@ -55,23 +73,23 @@ const TodoItem = ({ todo, onToggle, onDelete, onSelect }) => {
                     <span
                         className={`
               font-medium text-sm sm:text-base truncate transition-all duration-200 select-none cursor-pointer
-              ${todo.completed ? 'text-slate-400 line-through' : 'text-slate-700 group-hover/text:text-emerald-600'}
+              ${todo.is_completed ? 'text-slate-400 line-through' : 'text-slate-700 group-hover/text:text-emerald-600'}
             `}
-                        onClick={() => onSelect(todo)}
+                        onClick={() => getSelectedTask(todo.id)}
                     >
-                        {todo.text}
+                        {todo.title}
                     </span>
 
                     {/* Metadata Footer */}
                     <div className="flex items-center gap-3 text-xs text-slate-400 flex-wrap">
                         {/* Active Task Metadata */}
-                        {!todo.completed && (
+                        {!todo.is_completed && (
                             <>
                                 {/* Priority Indicator */}
                                 {todo.priority && (
                                     <div className="flex items-center gap-1.5">
                                         <div className={`w-2 h-2 rounded-full ${getPriorityColor(todo.priority)}`} />
-                                        <span className="capitalize">{todo.priority}</span>
+                                        <span className="capitalize">{getPriorityLabel(todo.priority)}</span>
                                     </div>
                                 )}
 
@@ -80,25 +98,38 @@ const TodoItem = ({ todo, onToggle, onDelete, onSelect }) => {
                         )}
 
                         {/* Common Metadata: Created At */}
-                        <span>Created {formatDate(todo.createdAt || Date.now())}</span>
+                        <span className="md:hidden text-slate-400">
+                            {formatJustDate(todo.created_at || Date.now())}
+                        </span>
+                        <span className="hidden md:inline text-slate-400">
+                            Created {formatDate(todo.created_at || Date.now())}
+                        </span>
 
                         {/* Completed Task Metadata */}
-                        {todo.completed && todo.completedOn && (
+                        {todo.is_completed && todo.completed_at && (
                             <>
                                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
                                 <span className="text-emerald-600 font-medium">
-                                    Completed {formatDate(todo.completedOn)}
+                                    Completed {formatDate(todo.completed_at)}
                                 </span>
                             </>
                         )}
 
                         {/* Procrastination Indicator */}
-                        {todo.postponeCount > 0 && (
+                        {todo.postpone_count > 0 && (
                             <>
                                 <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                                <span className="text-amber-600">
-                                    Postponed {todo.postponeCount}x
-                                </span>
+                                <div className={`flex items-center gap-1 ${todo.postpone_count > 3 ? 'text-red-600' : 'text-amber-600'}`}>
+                                    {/* Mobile View: Icon + Count */}
+                                    <span className="flex items-center gap-1 md:hidden">
+                                        <RotateCcw className="w-3 h-3" />
+                                        {todo.postpone_count}x
+                                    </span>
+                                    {/* Desktop View: Full Text */}
+                                    <span className="hidden md:inline">
+                                        Postponed {todo.postpone_count}x
+                                    </span>
+                                </div>
                             </>
                         )}
                     </div>
@@ -106,8 +137,21 @@ const TodoItem = ({ todo, onToggle, onDelete, onSelect }) => {
             </div>
 
             <button
-                onClick={() => onDelete(todo.id)}
-                className="opacity-0 group-hover:opacity-100 transition-opacity p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg focus:opacity-100 focus:outline-none ml-2"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    const taskDate = new Date(todo.scheduled_for).toDateString();
+                    const today = new Date().toDateString();
+                    const isToday = taskDate === today;
+                    rescheduleTaskDay(todo.id, isToday ? 1 : 0);
+                }}
+                className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity p-2 text-slate-400 hover:text-amber-500 hover:bg-amber-50 rounded-lg focus:opacity-100 focus:outline-none ml-2"
+                aria-label="Reschedule task"
+            >
+                <RotateCcw className="w-5 h-5 cursor-pointer" />
+            </button>
+            <button
+                onClick={() => deleteTask(todo.id)}
+                className="opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg focus:opacity-100 focus:outline-none ml-2"
                 aria-label="Delete task"
             >
                 <Trash2 className="w-5 h-5 cursor-pointer" />
