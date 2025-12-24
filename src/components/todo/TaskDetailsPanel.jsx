@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { X, Clock, RotateCcw, CircleCheckBig, CircleX } from 'lucide-react';
 import Button from '../ui/Button';
 import Loading from '../ui/Loading';
+import { formatDate } from '../../utils/utils';
 
 const TaskDetailsPanel = ({
     selectedTask,
@@ -66,16 +67,6 @@ const TaskDetailsPanel = ({
     };
 
     if (!isOpen || !selectedTask || !selectedTask.id) return null;
-
-    // Helper to format date
-    const formatDate = (timestamp) => {
-        if (!timestamp) return 'Never';
-        return new Date(timestamp).toLocaleString('en-US', {
-            month: 'short', day: 'numeric',
-            hour: 'numeric', minute: '2-digit', hour12: true
-        });
-    };
-
 
     return (
         <div className="fixed inset-0 z-50 overflow-hidden">

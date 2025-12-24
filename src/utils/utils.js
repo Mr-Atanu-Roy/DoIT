@@ -13,3 +13,34 @@ export const getDateTimeString = (dayOffset = 0, withTime = false) => {
         : d.toISOString().slice(0, 10);       // date
 }
 
+
+
+export const formatDate = (
+    timestamp,
+    {
+        locale = 'en-GB',
+        showDate = true,
+        showTime = true,
+        showYear = false,
+        hour12 = false,
+        fallback = 'Never'
+    } = {}
+) => {
+    if (!timestamp) return fallback;
+
+    const options = {};
+
+    if (showDate) {
+        options.day = 'numeric';
+        options.month = 'short';
+        if (showYear) options.year = 'numeric';
+    }
+
+    if (showTime) {
+        options.hour = '2-digit';
+        options.minute = '2-digit';
+        options.hour12 = hour12;
+    }
+
+    return new Date(timestamp).toLocaleString(locale, options);
+};

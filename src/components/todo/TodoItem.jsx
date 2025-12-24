@@ -1,14 +1,7 @@
 import { Trash2, CircleCheckBig, Circle, RotateCcw } from 'lucide-react';
+import { formatDate } from '../../utils/utils';
 
 const TodoItem = ({ todo, markTask, deleteTask, rescheduleTaskDay, getSelectedTask }) => {
-    // Helper to format date
-    const formatDate = (timestamp) => {
-        if (!timestamp) return 'Never';
-        return new Date(timestamp).toLocaleString('en-GB', {
-            day: 'numeric', month: 'short',
-            hour: '2-digit', minute: '2-digit', hour12: false
-        });
-    };
 
     // Format just date helper
     const formatJustDate = (timestamp) => {
@@ -99,7 +92,7 @@ const TodoItem = ({ todo, markTask, deleteTask, rescheduleTaskDay, getSelectedTa
                         {/* Date & Time Metadata */}
                         <div className="flex items-center gap-1 text-slate-400">
                             <span className="md:hidden">
-                                {todo.is_completed ? 'Done' : 'Added'} {formatJustDate(todo.is_completed ? todo.completed_on : todo.created_at)}
+                                {todo.is_completed ? 'Done' : 'Added'} {formatDate(todo.is_completed ? todo.completed_on : todo.created_at, { showTime: false, showYear: false })}
                             </span>
                             <span className="hidden md:inline">
                                 {todo.is_completed ? 'Done' : 'Added'} {formatDate(todo.is_completed ? todo.completed_on : todo.created_at)}

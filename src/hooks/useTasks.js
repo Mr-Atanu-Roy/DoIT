@@ -46,7 +46,7 @@ export const useTasks = (day = 0) => {
 
             setSelectedTask(data[0] || {});
         } catch (err) {
-            toast.error(err.message || "Failed to load task details");
+            toast.error("Failed to load task details err:1");
         } finally {
             setSelectedTaskLoading(false);
         }
@@ -83,7 +83,7 @@ export const useTasks = (day = 0) => {
             setHasMore((data || []).length === PAGE_SIZE);
             setPage(pageIndex);
         } catch (err) {
-            toast.error(err.message || "Failed to load tasks");
+            toast.error("Failed to load tasks err:2");
         } finally {
             setLoading(false);
         }
@@ -137,7 +137,7 @@ export const useTasks = (day = 0) => {
             setTasks(prev => [data[0], ...prev]);
             toast.success("Task added");
         } catch (err) {
-            toast.error(err.message || "Failed to add task");
+            toast.error("Failed to add task err:3");
         }
     };
 
@@ -152,7 +152,7 @@ export const useTasks = (day = 0) => {
                 )
             );
         } catch (err) {
-            toast.error("Failed to update task");
+            toast.error("Failed to update task err:4");
         }
     };
 
@@ -170,7 +170,7 @@ export const useTasks = (day = 0) => {
 
             toast.success("Task deleted");
         } catch (err) {
-            toast.error("Failed to delete task");
+            toast.error("Failed to delete task err:5");
         }
     };
 
@@ -226,7 +226,7 @@ export const useTasks = (day = 0) => {
 
             toast.success("Task updated");
         } catch (err) {
-            toast.error(err.message || "Failed to update task");
+            toast.error("Failed to update task err:6");
         }
     };
 
@@ -241,7 +241,7 @@ export const useTasks = (day = 0) => {
             toast.success(`Task rescheduled for ${dayOffset === 1 ? "tomorrow" : "today"}`);
         } catch (err) {
             console.log(err);
-            toast.error(err.message || "Failed to reschedule task");
+            toast.error("Failed to reschedule task err:7");
         }
     };
 
