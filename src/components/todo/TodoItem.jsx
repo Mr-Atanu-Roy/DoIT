@@ -3,14 +3,6 @@ import { formatDate } from '../../utils/utils';
 
 const TodoItem = ({ todo, markTask, deleteTask, rescheduleTaskDay, getSelectedTask }) => {
 
-    // Format just date helper
-    const formatJustDate = (timestamp) => {
-        if (!timestamp) return '';
-        return new Date(timestamp).toLocaleDateString('en-GB', {
-            day: 'numeric', month: 'short'
-        });
-    };
-
     // Priority color helper
     const getPriorityColor = (priority) => {
         switch (String(priority)) { // Ensure string comparison
@@ -30,6 +22,12 @@ const TodoItem = ({ todo, markTask, deleteTask, rescheduleTaskDay, getSelectedTa
         }
     }
 
+    const truncateText = (text, maxLength) => {
+        if (!text) return '';
+        if (text.length <= maxLength) return text;
+        return text.slice(0, maxLength) + '...';
+    };
+
     return (
         <div
             className={`
@@ -46,11 +44,7 @@ const TodoItem = ({ todo, markTask, deleteTask, rescheduleTaskDay, getSelectedTa
                         e.stopPropagation();
                         markTask(todo.id, !todo.is_completed);
                     }}
-                    className={`
-            shrink-0 transition-colors duration-200 focus:outline-none
-            ${todo.is_completed ? 'text-emerald-500' : 'text-slate-300 hover:text-emerald-400'}
-          `}
-                >
+                    className={`shrink-0 transition-colors duration-200 focus:outline-none ${todo.is_completed ? 'text-emerald-500' : 'text-slate-300 hover:text-emerald-400'}`}>
                     {todo.is_completed ? (
                         <CircleCheckBig className="w-6 h-6 cursor-pointer" />
                     ) : (
@@ -61,12 +55,19 @@ const TodoItem = ({ todo, markTask, deleteTask, rescheduleTaskDay, getSelectedTa
                 <div className="flex flex-col gap-1 min-w-0 flex-1 group/text">
                     <span
                         className={` text-wrap
-              font-medium text-xs sm:text-base truncate transition-all duration-200 select-none cursor-pointer
+              font-medium text-xs sm:text-base transition-all duration-200 select-none cursor-pointer
               ${todo.is_completed ? 'text-slate-400 line-through' : 'text-slate-700 group-hover/text:text-emerald-600'}
             `}
                         onClick={() => getSelectedTask(todo.id)}
                     >
-                        {todo.title}
+                        {/* Mobile View: < 60 chars */}
+                        <span className="md:hidden">
+                            {truncateText(todo.title, 60)}
+                        </span>
+                        {/* Desktop View: < 75 chars */}
+                        <span className="hidden md:inline">
+                            {truncateText(todo.title, 75)}
+                        </span>
                     </span>
 
                     {/* Metadata Footer */}
