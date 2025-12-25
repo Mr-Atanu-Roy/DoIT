@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 import { LogOut, ArrowRight } from 'lucide-react';
 import { authService } from '../services/supabase/auth.service';
 import Button from '../components/ui/Button';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const Logout = () => {
+    usePageTitle("Logging out");
     useEffect(() => {
         const performLogout = async () => {
             // We can safely ignore errors here as we want to show the logout screen anyway

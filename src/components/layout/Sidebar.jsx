@@ -52,12 +52,12 @@ const Sidebar = ({ isOpen, onClose }) => {
                             onClick={onClose}
                             className="ml-auto lg:hidden p-1 text-slate-400 hover:text-slate-600 rounded-md hover:bg-slate-50"
                         >
-                            <X size={20} />
+                            <X size={25} />
                         </button>
                     </div>
 
                     {/* Navigation */}
-                    <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+                    <nav className="flex-1 px-5 py-8 space-y-1 overflow-y-auto">
                         {navItems.map((item) => (
                             <NavLink
                                 key={item.path}

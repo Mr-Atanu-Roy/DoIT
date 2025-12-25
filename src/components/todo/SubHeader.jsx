@@ -46,10 +46,10 @@ const SubHeader = ({ dayOffset = 0, refreshTrigger }) => {
     return (
         <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-end justify-between sm:gap-3">
             <div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-emerald-500 mb-1 capitalize">
+                <h3 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-1 capitalize">
                     {greeting}
                 </h3>
-                <h3 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-1 capitalize">
+                <h3 className="text-3xl sm:text-4xl font-bold bg-linear-to-r from-emerald-600 to-teal-400 bg-clip-text text-transparent mb-1 capitalize">
                     {userName}
                 </h3>
                 <div className="flex items-center justify-between text-slate-500 text-sm mb-4">
@@ -59,12 +59,12 @@ const SubHeader = ({ dayOffset = 0, refreshTrigger }) => {
 
             {/* Progress Tile */}
             {total > 0 && dayOffset === 0 && (
-                <div className="p-6 rounded-3xl bg-emerald-500 shadow-xl shadow-emerald-200/50 w-full sm:w-[360px] text-white relative overflow-hidden">
+                <div className="p-6  rounded-3xl bg-emerald-500 shadow-xl shadow-emerald-200/50 w-full sm:w-[360px] text-white relative overflow-hidden">
                     <div className="text-emerald-100 text-sm font-medium mb-4">Daily Progress</div>
 
                     <div className="flex items-end justify-between mb-4">
                         <div className="text-3xl font-bold tracking-tight">
-                            {completed}/{total} <span className="text-xl font-semibold opacity-90">Completed</span>
+                            {completed}/{total} <span className="text-lg font-semibold opacity-90">Completed</span>
                         </div>
                         <div className="text-3xl font-bold tracking-tight">{progress.toFixed(0)}%</div>
                     </div>

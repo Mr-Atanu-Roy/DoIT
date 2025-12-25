@@ -2,8 +2,10 @@ import RegisterForm from '../components/auth/RegisterForm';
 import { Rocket } from 'lucide-react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const Register = () => {
+    usePageTitle("Create Account");
 
     //redirect to home if user is already logged in
     const { user } = useAuth();

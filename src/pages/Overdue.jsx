@@ -7,8 +7,10 @@ import AddTaskInput from '../components/todo/AddTaskInput';
 import FilterBar from '../components/todo/FilterBar';
 import { useTasks } from '../hooks/useTasks';
 import Loading from '../components/ui/Loading';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const Overdue = () => {
+    usePageTitle("Overdue Tasks");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     // Initialize useTasks with null (all days)

@@ -7,8 +7,10 @@ import { supabase } from '../services/supabase/client';
 import { authService } from '../services/supabase/auth.service';
 import { useAuth } from '../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const ResetPassword = () => {
+    usePageTitle("Reset Password");
     //redirect to home if user is already logged in
     const { user } = useAuth();
     if (user) {

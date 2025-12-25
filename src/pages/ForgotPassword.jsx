@@ -2,8 +2,10 @@ import ForgotPasswordForm from '../components/auth/ForgotPasswordForm';
 import { LockKeyhole } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const ForgotPassword = () => {
+    usePageTitle("Forgot Password");
     //redirect to home if user is already logged in
     const { user } = useAuth();
     if (user) {

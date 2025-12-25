@@ -7,8 +7,10 @@ import { authService } from '../services/supabase/auth.service';
 import { useAuth } from '../hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { validate } from '../utils/auth.validators';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const VerifyEmail = () => {
+    usePageTitle("Verify Email");
     const { user } = useAuth();
 
     //redirect to home if user is already logged in

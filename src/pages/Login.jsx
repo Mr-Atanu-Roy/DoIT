@@ -2,8 +2,10 @@ import LoginForm from '../components/auth/LoginForm';
 import { useAuth } from '../hooks/useAuth';
 import { Rocket } from 'lucide-react';
 import { Navigate } from 'react-router-dom';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const Login = () => {
+    usePageTitle("Login");
 
     //redirect to home if user is already logged in
     const { user } = useAuth();

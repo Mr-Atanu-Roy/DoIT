@@ -8,8 +8,10 @@ import FilterBar from '../components/todo/FilterBar';
 import SubHeader from '../components/todo/SubHeader';
 import { useTasks } from '../hooks/useTasks';
 import Loading from '../components/ui/Loading';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const Today = () => {
+    usePageTitle("Today");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     // Manage day state here to pass to hook
     const [day, setDay] = useState(0);
