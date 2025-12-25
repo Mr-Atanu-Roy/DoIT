@@ -14,7 +14,12 @@ export const getDateTimeString = (dayOffset = 0, withTime = false) => {
 }
 
 
-
+/*
+    Returns formatted date
+    @param {string} timestamp: ISO timestamp
+    @param {object} options: options object
+    @returns {string} formatted date
+*/
 export const formatDate = (
     timestamp,
     {
@@ -44,3 +49,29 @@ export const formatDate = (
 
     return new Date(timestamp).toLocaleString(locale, options);
 };
+
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
+
+
+/*
+    Returns relative time
+    @param {string} date: ISO timestamp
+    @param {boolean} withoutSuffix: whether to include suffix (with suffix: 2 days ago, without suffix: 2 days)
+    @returns {string} relative time
+*/
+export const getRelativeTime = (date, withoutSuffix = false) => {
+    return dayjs(date).fromNow(withoutSuffix);
+}
+
+
+/*
+    Returns whether a date is overdue: if the date is before today
+    @param {string} date: ISO timestamp
+    @returns {boolean} whether the date is overdue
+*/
+export const isOverdue = (date) => {
+    return dayjs(date).isBefore(dayjs(), 'day');
+}

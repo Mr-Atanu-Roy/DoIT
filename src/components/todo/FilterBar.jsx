@@ -1,6 +1,9 @@
-import { ChevronDown, CalendarClock } from 'lucide-react';
+import { CalendarClock } from 'lucide-react';
+import PriorityFilter from '../ui/PriorityFilter';
+import IsCompletedFilter from '../ui/IsCompletedFilter';
+import IsOverdueFilter from '../ui/IsOverdueFilter';
 
-const FilterBar = ({ filters, setFilters, day, setDay, showPriority = true, title }) => {
+const FilterBar = ({ filters, setFilters, day = "ALL", setDay = () => { }, showStatus, showPriority, showOverdue }) => {
     // day: 0 is today, 1 is tomorrow.
     const isTodayFilterActive = day === 0;
 
@@ -11,56 +14,39 @@ const FilterBar = ({ filters, setFilters, day, setDay, showPriority = true, titl
     return (
         <>
             {/* Header & Filters */}
-            <div className={`mb-8 space-y-4 ${day === 'ALL' ? 'mt-4' : ''}`}>
-                <div className="flex items-center justify-between">
-                    <h2 className="text-xl sm:text-2xl font-bold text-slate-800">
-                        {day === 'ALL' ? (title || "All Tasks") : (isTodayFilterActive ? "Today's Tasks" : "Tomorrow's Tasks")}
-                    </h2>
-                    {day !== 'ALL' && (
-                        <div className="text-slate-500 text-sm font-medium text-right">
-                            <span className="md:hidden">
-                                {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
-                            </span>
-                            <span className="hidden md:inline">
-                                {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-                            </span>
-                        </div>
-                    )}
-                </div>
+            <div className="mb-8 space-y-4">
 
                 {/* Filters */}
-                <div className="flex flex-wrap gap-3 items-center justify-between">
-                    <div className="flex items-center gap-3">
+                <div className="flex gap-3 items-end justify-between flex-wrap">
+                    <div className="flex flex-wrap items-center gap-3">
                         {/* Status Filter */}
-                        <div className="relative group">
-                            <select
-                                className="appearance-none pl-3 pr-8 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 text-sm font-medium focus:outline-none focus:border-emerald-500 cursor-pointer shadow-sm hover:border-emerald-300"
-                                value={filters.status}
-                                onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                            >
-                                {day === 'ALL' && <option value="all">All</option>}
-                                <option value="active">Active</option>
-                                <option value="completed">Completed</option>
-                            </select>
-                            <ChevronDown className="w-4 h-4 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                        </div>
+                        {
+                            showStatus && (
+                                <IsCompletedFilter
+                                    status={filters.status}
+                                    setIsCompleteFilter={(newStatus) => setFilters(prev => ({ ...prev, status: newStatus }))}
+                                />
+                            )
+                        }
 
                         {/* Priority Filter */}
                         {showPriority && (
-                            <div className="relative group">
-                                <select
-                                    className="appearance-none pl-3 pr-8 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 text-sm font-medium focus:outline-none focus:border-emerald-500 cursor-pointer shadow-sm hover:border-emerald-300"
-                                    value={filters.priority}
-                                    onChange={(e) => setFilters(prev => ({ ...prev, priority: e.target.value }))}
-                                >
-                                    <option value="all">Priority: All</option>
-                                    <option value="1">High Priority</option>
-                                    <option value="2">Medium Priority</option>
-                                    <option value="3">Low Priority</option>
-                                </select>
-                                <ChevronDown className="w-4 h-4 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                            </div>
+                            <PriorityFilter
+                                priorityFilter={filters.priority}
+                                setPriorityFilter={(newPriority) => setFilters(prev => ({ ...prev, priority: newPriority }))}
+                            />
                         )}
+
+                        {/* Overdue Filter */}
+                        {
+                            showOverdue && (
+                                <IsOverdueFilter
+                                    status={filters.overdue || 'all'}
+                                    setIsOverdueFilter={(newStatus) => setFilters(prev => ({ ...prev, overdue: newStatus }))}
+                                />
+                            )
+                        }
+
                     </div>
 
                     {/* Date Filter Toggle */}

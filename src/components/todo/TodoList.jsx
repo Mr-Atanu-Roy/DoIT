@@ -6,6 +6,7 @@ import Loading from '../ui/Loading';
 const TodoList = ({
     tasks,
     hasMore,
+    day,
     fetchMoreTasks,
     markTask,
     deleteTask,
@@ -39,6 +40,7 @@ const TodoList = ({
                 <TodoItem
                     key={task.id}
                     todo={task}
+                    day={day}
                     markTask={markTask}
                     deleteTask={deleteTask}
                     rescheduleTaskDay={rescheduleTaskDay}

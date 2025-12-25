@@ -11,6 +11,15 @@ const TaskDetailsPanel = ({
     updateTask,
     isLoading,
 }) => {
+    // Cache the task to display during exit animation
+    const [cachedTask, setCachedTask] = useState(null);
+
+    // Update cached task when selectedTask is available
+    useEffect(() => {
+        if (selectedTask && selectedTask.id) {
+            setCachedTask(selectedTask);
+        }
+    }, [selectedTask]);
     // Local state for editing
     const [formData, setFormData] = useState({
         title: '',
@@ -21,11 +30,12 @@ const TaskDetailsPanel = ({
         completed_on: null,
     });
 
-    // Reset form when selectedTask changes or panel opens
+    // Reset form when selectedTask or cachedTask changes
     useEffect(() => {
-        if (selectedTask && selectedTask.id) {
+        const taskToUse = selectedTask && selectedTask.id ? selectedTask : cachedTask;
 
-            const date = new Date(selectedTask.scheduled_for);
+        if (taskToUse && taskToUse.id) {
+            const date = new Date(taskToUse.scheduled_for);
             const today = new Date();
             const tomorrow = new Date(today);
             tomorrow.setDate(tomorrow.getDate() + 1);
@@ -33,15 +43,15 @@ const TaskDetailsPanel = ({
             const scheduledVal = date.toDateString() === today.toDateString() ? 'today' : 'tomorrow';
 
             setFormData({
-                title: selectedTask.title || '',
-                description: selectedTask.description || '',
-                priority: String(selectedTask.priority || '2'),
+                title: taskToUse.title || '',
+                description: taskToUse.description || '',
+                priority: String(taskToUse.priority || '2'),
                 scheduled_for: scheduledVal,
-                is_completed: selectedTask.is_completed || false,
-                completed_on: selectedTask.completed_on || null,
+                is_completed: taskToUse.is_completed || false,
+                completed_on: taskToUse.completed_on || null,
             });
         }
-    }, [selectedTask]);
+    }, [selectedTask, cachedTask]);
 
     // Handle Closing
     const handleClose = () => {
@@ -55,7 +65,7 @@ const TaskDetailsPanel = ({
             date.setDate(date.getDate() + 1);
         }
 
-        updateTask(selectedTask.id, {
+        updateTask(cachedTask.id, {
             title: formData.title,
             description: formData.description,
             priority: Number(formData.priority),
@@ -66,18 +76,26 @@ const TaskDetailsPanel = ({
         // handleClose();
     };
 
-    if (!isOpen || !selectedTask || !selectedTask.id) return null;
+    // Only return null if we have never had a task (initial load)
+    if (!cachedTask) return null;
+
+    // Use cachedTask for display to ensure content persists during exit animation
+    const displayTask = cachedTask;
 
     return (
-        <div className="fixed inset-0 z-50 overflow-hidden">
+        <div className={`fixed inset-0 z-50 overflow-hidden ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}>
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-slate-900/20 backdrop-blur-sm transition-opacity"
+                className={`absolute inset-0 bg-slate-900/20 backdrop-blur-sm transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
                 onClick={handleClose}
             />
 
             {/* Panel */}
-            <div className="absolute inset-y-0 right-0 w-full md:w-[480px] bg-white shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out h-full animate-slide-in-right">
+            <div className={`
+                absolute inset-y-0 right-0 w-full md:w-[480px] bg-white shadow-2xl flex flex-col h-full 
+                transform transition-transform duration-300 ease-in-out
+                ${isOpen ? 'translate-x-0' : 'translate-x-full'}
+            `}>
 
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
@@ -174,11 +192,11 @@ const TaskDetailsPanel = ({
                             <div className="border-t border-slate-100 pt-6">
                                 <h3 className="text-sm font-bold text-slate-800 mb-4">Metadata</h3>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div className={`flex items-start gap-3 p-3 rounded-lg ${selectedTask.postpone_count ? 'bg-rose-50' : 'bg-slate-50'}`}>
-                                        <RotateCcw className={`w-4 h-4 ${selectedTask.postpone_count ? 'text-rose-400' : 'text-slate-400'}`} />
+                                    <div className={`flex items-start gap-3 p-3 rounded-lg ${displayTask.postpone_count ? 'bg-rose-50' : 'bg-slate-50'}`}>
+                                        <RotateCcw className={`w-4 h-4 ${displayTask.postpone_count ? 'text-rose-400' : 'text-slate-400'}`} />
                                         <div>
-                                            <p className={`text-xs font-semibold ${selectedTask.postpone_count ? 'text-rose-600' : 'text-slate-500'}`}>Postponed</p>
-                                            <p className={`text-sm ${selectedTask.postpone_count ? 'text-rose-700' : 'text-slate-700'}`}>{selectedTask.postpone_count || 0} times</p>
+                                            <p className={`text-xs font-semibold ${displayTask.postpone_count ? 'text-rose-600' : 'text-slate-500'}`}>Postponed</p>
+                                            <p className={`text-sm ${displayTask.postpone_count ? 'text-rose-700' : 'text-slate-700'}`}>{displayTask.postpone_count || 0} times</p>
                                         </div>
                                     </div>
 
@@ -202,14 +220,14 @@ const TaskDetailsPanel = ({
                                         <Clock className="w-4 h-4 text-slate-400 mt-0.5" />
                                         <div>
                                             <p className="text-xs font-semibold text-slate-500">Created At</p>
-                                            <p className="text-sm text-slate-700">{formatDate(selectedTask.created_at)}</p>
+                                            <p className="text-sm text-slate-700">{formatDate(displayTask.created_at)}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-start gap-3 p-3 rounded-lg bg-slate-50">
                                         <Clock className="w-4 h-4 text-slate-400 mt-0.5" />
                                         <div>
                                             <p className="text-xs font-semibold text-slate-500">Last Updated</p>
-                                            <p className="text-sm text-slate-700">{formatDate(selectedTask.updated_at)}</p>
+                                            <p className="text-sm text-slate-700">{formatDate(displayTask.updated_at)}</p>
                                         </div>
                                     </div>
                                 </div>

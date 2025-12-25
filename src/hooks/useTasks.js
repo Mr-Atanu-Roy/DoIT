@@ -7,7 +7,11 @@ import toast from "react-hot-toast";
 const PAGE_SIZE = 10;
 
 
-export const useTasks = (day = 0, defaultStatus = 'active') => {
+
+
+// !Hook for interacting with tasks.
+
+export const useTasks = (day = 0, defaultStatus = 'incompleted', defaultOverdue = 'all') => {
     // --------------------
     // STATE
     // --------------------
@@ -26,46 +30,16 @@ export const useTasks = (day = 0, defaultStatus = 'active') => {
 
     //for task filters
     const [filters, setFilters] = useState({
-        status: defaultStatus,   // all | active | completed
+        status: defaultStatus,   // all | incompleted | completed
         priority: "all",    // all | 1 | 2 | 3
         search: "",         // title search
+        overdue: defaultOverdue, // all | overdue | completed
     });
 
     // --------------------
     // CORE FETCH
     // --------------------
 
-    //!USE: only in all-tasks page
-    const getAllTasks = useCallback(async (title = '', status = 'all', pageIndex = 0) => {
-        try {
-            setLoading(true);
-
-            const from = pageIndex * PAGE_SIZE;
-            const to = from + PAGE_SIZE - 1;
-
-            // Map status string to boolean/null
-            let isCompleted = null;
-            if (status === 'active') isCompleted = false;
-            if (status === 'completed') isCompleted = true;
-
-            if (status === 'completed') isCompleted = true;
-
-            const { data, error } = await taskService.getAllTasks(title || null, isCompleted, from, to);
-
-            if (error) throw error;
-
-            setTasks(prev =>
-                pageIndex > 0 ? [...prev, ...(data || [])] : (data || [])
-            );
-
-            setHasMore((data || []).length === PAGE_SIZE);
-            setPage(pageIndex);
-        } catch (err) {
-            toast.error("Failed to load tasks err:0");
-        } finally {
-            setLoading(false);
-        }
-    }, []);
 
     const getSelectedTask = async (taskId) => {
         if (!taskId) return;
@@ -97,9 +71,16 @@ export const useTasks = (day = 0, defaultStatus = 'active') => {
                         ? Number(filters.priority)
                         : null,
                 is_completed:
-                    filters.status === "all"
-                        ? null
-                        : filters.status === "completed",
+                    filters.status !== 'all' // If status filter is active (not all)
+                        ? filters.status === 'completed'
+                        : filters.overdue === 'completed' // If overdue filter is 'completed'
+                            ? true
+                            : filters.overdue === 'overdue' // If overdue filter is 'overdue'
+                                ? false
+                                : null, // 'all' or undefined
+
+                is_overdue: filters.overdue === 'overdue' ? true : null,
+
                 title: filters.search || null,
                 dayOffset: day,
                 from,
@@ -310,7 +291,5 @@ export const useTasks = (day = 0, defaultStatus = 'active') => {
         getSelectedTask,
         setSelectedTask,
 
-        getAllTasks,      //! USE: only in all-tasks page
     };
 };
-

@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import Header from '../components/layout/Header';
 import TodoList from '../components/todo/TodoList';
 import TaskDetailsPanel from '../components/todo/TaskDetailsPanel';
 import AddTaskInput from '../components/todo/AddTaskInput';
 import FilterBar from '../components/todo/FilterBar';
+import SubHeader from '../components/todo/SubHeader';
 import { useTasks } from '../hooks/useTasks';
 import Loading from '../components/ui/Loading';
 
@@ -35,6 +36,41 @@ const Today = () => {
         setFilters(prev => ({ ...prev, search: query }));
     }, [setFilters]);
 
+    // State to trigger stats refresh in SubHeader
+    const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+    const triggerRefresh = useCallback(() => {
+        setRefreshTrigger(prev => prev + 1);
+    }, []);
+
+    // Wrappers to update stats when tasks change
+    const handleAddTask = async (task) => {
+        await addTask(task);
+        triggerRefresh();
+    };
+
+    const handleUpdateTask = async (id, updates) => {
+        const res = await updateTask(id, updates);
+        triggerRefresh();
+        return res;
+    };
+
+    const handleMarkTask = async (id, isCompleted) => {
+        await markTask(id, isCompleted);
+        triggerRefresh();
+    };
+
+    const handleDeleteTask = async (id) => {
+        await deleteTask(id);
+        triggerRefresh();
+    };
+
+    const handleReschedule = async (id, newDayOffset) => {
+        await rescheduleTaskDay(id, newDayOffset);
+        triggerRefresh();
+    };
+
+
     return (
         <div className="flex bg-slate-50 min-h-screen">
             <Sidebar
@@ -49,12 +85,16 @@ const Today = () => {
                 />
 
                 <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full relative">
+                    <SubHeader dayOffset={day} refreshTrigger={refreshTrigger} />
+
                     {/* Header & Filters */}
                     <FilterBar
                         filters={filters}
                         setFilters={setFilters}
                         day={day}
                         setDay={setDay}
+                        showPriority={true}
+                        showStatus={true}
                     />
 
                     {/* Task List */}
@@ -66,11 +106,12 @@ const Today = () => {
                         ) : (
                             <TodoList
                                 tasks={tasks}
+                                day={day}
                                 hasMore={hasMore}
                                 fetchMoreTasks={fetchMoreTasks}
-                                markTask={markTask}
-                                deleteTask={deleteTask}
-                                rescheduleTaskDay={rescheduleTaskDay}
+                                markTask={handleMarkTask}
+                                deleteTask={handleDeleteTask}
+                                rescheduleTaskDay={handleReschedule}
                                 getSelectedTask={getSelectedTask}
                             />
                         )}
@@ -80,13 +121,13 @@ const Today = () => {
                             selectedTask={selectedTask}
                             isOpen={!!selectedTask.id}
                             onClose={setSelectedTask}
-                            updateTask={updateTask}
+                            updateTask={handleUpdateTask}
                             isLoading={selectedTaskLoading}
                         />
                     </div>
 
                     {/* Sticky Add Task Section */}
-                    <AddTaskInput addTask={addTask} />
+                    <AddTaskInput addTask={handleAddTask} />
                 </main>
             </div>
         </div>

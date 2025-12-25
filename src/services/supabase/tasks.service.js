@@ -80,38 +80,6 @@ export const taskService = {
 
 
     /**
-    * ! USE this only in all-tasks page: for getting all taks & filter by is_completed
-    * Get all tasks for a user with is_completed filter
-    * @param {string} title: search by title
-    * @param {boolean} is_completed: true: completed, false: not completed, null: all
-    * @returns {Promise<{data, error}>}
-    */
-    async getAllTasks(title = null, is_completed = null, from, to) {
-        if (!supabase) return { error: { message: "Supabase not initialized" } };
-
-        //get the tasks: then order by date
-        let query = supabase
-            .from('tasks')
-            .select('*')
-            .order('created_at', { ascending: false });
-
-        // filter by title (case-insensitive search)
-        if (title !== null) {
-            query = query.ilike('title', `%${title}%`);
-        }
-
-        // filter by completed if given
-        if (is_completed !== null) {
-            query = query.eq('is_completed', is_completed);
-        }
-        // pagination
-        query = query.range(from, to);
-
-        return await query;
-    },
-
-
-    /**
     * Mark task complete/incomplete
     * @param {int} taskId: pk
     * @param {boolean} is_completed
@@ -157,6 +125,7 @@ export const taskService = {
         is_completed = null,
         title = null,
         dayOffset = null,
+        is_overdue = null,
         from,
         to
     }) {
@@ -191,10 +160,62 @@ export const taskService = {
             query = query.ilike('title', `%${title}%`);
         }
 
+        // filter by overdue
+        if (is_overdue !== null) {
+            query = query.eq('is_completed', false);
+            query = query.lt('scheduled_for', getDateTimeString(0));
+        }
+
         // pagination
         query = query.range(from, to);
 
         return await query;
+    },
+
+    /**
+    * Get task statistics for a specific day
+    * @param {int} dayOffset: 0 for today, 1 for tomorrow
+    * @returns {Promise<{data: {total: number, completed: number, active: number}, error}>}
+    */
+    async getTaskStatsByDay(dayOffset = 0) {
+        if (!supabase) return { error: { message: "Supabase not initialized" } };
+
+        try {
+            const date = getDateTimeString(dayOffset);
+
+            const [totalResult, completedResult] = await Promise.all([
+                // Get total count
+                supabase
+                    .from('tasks')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('scheduled_for', date),
+
+                // Get completed count
+                supabase
+                    .from('tasks')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('scheduled_for', date)
+                    .eq('is_completed', true)
+            ]);
+
+
+            if (totalResult.error) throw totalResult.error;
+            if (completedResult.error) throw completedResult.error;
+
+            const total = totalResult.count || 0;
+            const completed = completedResult.count || 0;
+
+            return {
+                data: {
+                    total,
+                    completed,
+                    active: total - completed
+                }
+            };
+
+        } catch (error) {
+            return { error };
+        }
     }
 
 }

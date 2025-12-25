@@ -8,10 +8,10 @@ import FilterBar from '../components/todo/FilterBar';
 import { useTasks } from '../hooks/useTasks';
 import Loading from '../components/ui/Loading';
 
-const AllTasks = () => {
+const Overdue = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    // Initialize useTasks with 'ALL' to skip default fetching
+    // Initialize useTasks with null (all days)
     const {
         tasks,
         selectedTask,
@@ -28,26 +28,20 @@ const AllTasks = () => {
         deleteTask,
         rescheduleTaskDay,
         setSelectedTask,
-        getAllTasks
-    } = useTasks('ALL', 'all');
+        fetchMoreTasks
+    } = useTasks(null, 'all', 'overdue');
 
     // Handle search from Header
     const handleSearch = useCallback((query) => {
         setFilters(prev => ({ ...prev, search: query }));
     }, [setFilters]);
 
-    // Effect to fetch tasks when filters change
-    useEffect(() => {
-        // Reset page to 0 when filters change
-        getAllTasks(filters.search, filters.status, 0);
-    }, [filters.search, filters.status, getAllTasks]);
-
     // Handle fetching more tasks (infinite scroll)
     const handleFetchMore = useCallback(() => {
         if (!loading && hasMore) {
-            getAllTasks(filters.search, filters.status, page + 1);
+            fetchMoreTasks();
         }
-    }, [loading, hasMore, page, filters.search, filters.status, getAllTasks]);
+    }, [loading, hasMore, fetchMoreTasks]);
 
     return (
         <div className="flex bg-slate-50 min-h-screen">
@@ -58,7 +52,7 @@ const AllTasks = () => {
 
             <div className="flex-1 flex flex-col lg:ml-64 min-h-screen transition-all duration-300">
                 <Header
-                    title="All Tasks"
+                    title="Overdue"
                     onMenuClick={() => setIsSidebarOpen(true)}
                     onSearch={handleSearch}
                 />
@@ -67,9 +61,8 @@ const AllTasks = () => {
                     <FilterBar
                         filters={filters}
                         setFilters={setFilters}
-                        day="ALL"
-                        setDay={() => { }} // No-op since we don't toggle dates here
-                        showPriority={false}
+                        showOverdue={true}
+                        title="Overdue Tasks"
                     />
 
                     {loading && tasks.length === 0 ? (
@@ -104,4 +97,4 @@ const AllTasks = () => {
     );
 };
 
-export default AllTasks;
+export default Overdue;

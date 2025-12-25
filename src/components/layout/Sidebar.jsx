@@ -1,5 +1,5 @@
 import { NavLink, Link } from 'react-router-dom';
-import { Rocket, CalendarClock, ListTodo, Notebook, Settings, X, LogOut } from 'lucide-react';
+import { Rocket, CalendarClock, ClockFading, Notebook, Settings, X, LogOut } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -20,7 +20,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
     const navItems = [
         { icon: CalendarClock, label: 'Today', path: '/' },
-        { icon: ListTodo, label: 'All Tasks', path: '/all-tasks' },
+        { icon: ClockFading, label: 'Overdue Tasks', path: '/overdue' },
         // { icon: Notebook, label: 'Notes', path: '/notes' },
         // { icon: Settings, label: 'Settings', path: '/settings' },
     ];
@@ -37,7 +37,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
             {/* Sidebar */}
             <aside className={`
-        fixed top-0 left-0 z-50 h-full w-72 lg:w-64 bg-white border-r border-slate-100 shadow-xl lg:shadow-none
+        fixed top-0 left-0 z-50 h-full w-full sm:w-72 lg:w-64 bg-white border-r border-slate-100 shadow-xl lg:shadow-none
         transition-transform duration-300 ease-spring
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>

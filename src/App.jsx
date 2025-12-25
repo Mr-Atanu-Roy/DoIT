@@ -3,7 +3,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import Today from './pages/Today';
-import AllTasks from './pages/AllTasks';
+import Overdue from './pages/Overdue';
 import Logout from './pages/Logout';
 import VerifyEmail from './pages/VerifyEmail';
 import ResetPassword from './pages/ResetPassword';
@@ -27,9 +27,9 @@ function App() {
                         <Today />
                     </ProtectedRoute>
                 } />
-                <Route path="/all-tasks" element={
+                <Route path="/overdue" element={
                     <ProtectedRoute>
-                        <AllTasks />
+                        <Overdue />
                     </ProtectedRoute>
                 } />
                 {/* Fallback route */}
