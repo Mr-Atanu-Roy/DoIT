@@ -38,8 +38,6 @@ const AddTaskInput = ({ addTask }) => {
 
         setNewTask("");
         setNewPriority("2");
-        // Reset schedule logic based on current time
-        setIsScheduledForToday(new Date().getHours() < 18);
     };
 
     return (

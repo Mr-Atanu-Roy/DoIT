@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { taskService } from "../services/supabase/tasks.service";
 import { validateTasks } from "../utils/tasks.validators";
+import { getDateTimeString, isOverdue } from "../utils/utils";
 import toast from "react-hot-toast";
 
 // !Default pagination size
@@ -116,6 +117,40 @@ export const useTasks = (day = 0, defaultStatus = 'incompleted', defaultOverdue 
     };
 
     // --------------------
+    // HELPERS
+    // --------------------
+    const isTaskVisible = useCallback((task) => {
+        // 1. Check Day Filter
+        // If day is set (not null/ALL), task must belong to that day
+        if (day !== null && day !== 'ALL') {
+            const dateStr = getDateTimeString(day);
+            if (task.scheduled_for !== dateStr) return false;
+        }
+
+        // 2. Check Status Filter
+        if (filters.status === 'incompleted' && task.is_completed) return false;
+        if (filters.status === 'completed' && !task.is_completed) return false;
+
+        // 3. Check Overdue Filter
+        if (filters.overdue === 'overdue') {
+            // Task must be overdue and NOT completed
+            if (!isOverdue(task.scheduled_for)) return false;
+            if (task.is_completed) return false;
+        } else if (filters.overdue === 'completed') {
+            // If we are strictly looking for completed overdue tasks via filter
+            if (!task.is_completed) return false;
+        }
+
+        // 4. Check Priority Filter
+        if (filters.priority !== 'all' && Number(filters.priority) !== task.priority) return false;
+
+        // 5. Check Search Filter
+        if (filters.search && !task.title.toLowerCase().includes(filters.search.toLowerCase())) return false;
+
+        return true;
+    }, [day, filters]);
+
+    // --------------------
     // MUTATIONS
     // --------------------
     const addTask = async (payload) => {
@@ -147,7 +182,13 @@ export const useTasks = (day = 0, defaultStatus = 'incompleted', defaultOverdue 
             const { data, error } = await taskService.createTask(payload);
             if (error) throw error;
 
-            setTasks(prev => [data[0], ...prev]);
+            const newTask = data[0];
+
+            // Only add to list if it matches current filters
+            if (isTaskVisible(newTask)) {
+                setTasks(prev => [newTask, ...prev]);
+            }
+
             toast.success("Task added");
         } catch (err) {
             toast.error("Failed to add task err:3");
@@ -159,11 +200,20 @@ export const useTasks = (day = 0, defaultStatus = 'incompleted', defaultOverdue 
             const { data, error } = await taskService.markTask(taskId, isCompleted);
             if (error) throw error;
 
-            setTasks(prev =>
-                prev.map(task =>
-                    task.id === taskId ? data[0] : task
-                )
-            );
+            const updatedTask = data[0];
+
+            setTasks(prev => {
+                // If task no longer fits filters, remove it
+                if (!isTaskVisible(updatedTask)) {
+                    return prev.filter(t => t.id !== taskId);
+                }
+                // Otherwise update it in place
+                return prev.map(task =>
+                    task.id === taskId ? updatedTask : task
+                );
+            });
+
+            toast.success(`Task marked ${isCompleted ? "completed" : "incompleted"}`);
         } catch (err) {
             toast.error("Failed to update task err:4");
         }
@@ -227,14 +277,20 @@ export const useTasks = (day = 0, defaultStatus = 'incompleted', defaultOverdue 
             const { data, error } = await taskService.updateTask(taskId, updates);
             if (error) throw error;
 
-            setTasks(prev =>
-                prev.map(task =>
-                    task.id === taskId ? data[0] : task
-                )
-            );
+            const updatedTask = data[0];
+
+            setTasks(prev => {
+                // If task no longer fits filters, remove it
+                if (!isTaskVisible(updatedTask)) {
+                    return prev.filter(t => t.id !== taskId);
+                }
+                return prev.map(task =>
+                    task.id === taskId ? updatedTask : task
+                );
+            });
 
             setSelectedTask(prev =>
-                prev.id === taskId ? data[0] : prev
+                prev.id === taskId ? updatedTask : prev
             );
 
             toast.success("Task updated");
@@ -248,8 +304,22 @@ export const useTasks = (day = 0, defaultStatus = 'incompleted', defaultOverdue 
             const { data, error } = await taskService.moveTaskDay(taskId, dayOffset);
             if (error) throw error;
 
-            // Task no longer belongs to this day: Remove from list
-            setTasks(prev => prev.filter(task => task.id !== taskId));
+            // Optimistic update: Remove from list logic handles it if day changed
+            // But we can check isTaskVisible with the NEW date if we had the full task object.
+            // However, moveTaskDay returns the updated task usually (select() at end).
+            // Let's assume data[0] is returned.
+            if (data && data[0]) {
+                const updatedTask = data[0];
+                setTasks(prev => {
+                    if (!isTaskVisible(updatedTask)) {
+                        return prev.filter(t => t.id !== taskId);
+                    }
+                    return prev.map(t => t.id === taskId ? updatedTask : t);
+                });
+            } else {
+                // Fallback if data not returned, just remove as before (safest assumption for reschedule)
+                setTasks(prev => prev.filter(task => task.id !== taskId));
+            }
 
             toast.success(`Task rescheduled for ${dayOffset === 1 ? "tomorrow" : "today"}`);
         } catch (err) {
