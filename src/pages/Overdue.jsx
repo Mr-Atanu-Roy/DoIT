@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import Sidebar from '../components/layout/Sidebar';
 import Header from '../components/layout/Header';
 import TodoList from '../components/todo/TodoList';
@@ -20,7 +20,6 @@ const Overdue = () => {
         loading,
         selectedTaskLoading,
         hasMore,
-        page,
         filters,
         setFilters,
         getSelectedTask,
