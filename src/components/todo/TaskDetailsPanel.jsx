@@ -14,6 +14,9 @@ const TaskDetailsPanel = ({
     // Cache the task to display during exit animation
     const [cachedTask, setCachedTask] = useState(null);
 
+    //for save loading state
+    const [isSaving, setIsSaving] = useState(false);
+
     // Update cached task when selectedTask is available
     useEffect(() => {
         if (selectedTask && selectedTask.id) {
@@ -58,29 +61,35 @@ const TaskDetailsPanel = ({
         onClose({}); // Pass empty object to clear selection
     };
 
-    // Handle Saving
-    const handleSave = () => {
-        const date = new Date();
-        if (formData.scheduled_for === 'tomorrow') {
-            date.setDate(date.getDate() + 1);
-        }
-
-        updateTask(cachedTask.id, {
-            title: formData.title,
-            description: formData.description,
-            priority: Number(formData.priority),
-            scheduled_for: date.toISOString(),
-            is_completed: formData.is_completed
-            // completed_on handled by backend: tasks.service
-        });
-        // handleClose();
-    };
-
     // Only return null if we have never had a task (initial load)
     if (!cachedTask) return null;
 
     // Use cachedTask for display to ensure content persists during exit animation
     const displayTask = cachedTask;
+
+    // Handle Saving
+    const handleSave = async () => {
+        setIsSaving(true);
+        try {
+            const date = new Date();
+            if (formData.scheduled_for === 'tomorrow') {
+                date.setDate(date.getDate() + 1);
+            }
+
+            await updateTask(cachedTask.id, {
+                title: formData.title,
+                description: formData.description,
+                priority: Number(formData.priority),
+                scheduled_for: date.toISOString(),
+                is_completed: formData.is_completed
+                // completed_on handled by backend: tasks.service
+            });
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
     return (
         <div className={`fixed inset-0 z-50 overflow-hidden ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}>
@@ -191,7 +200,8 @@ const TaskDetailsPanel = ({
                             {/* Metadata Section (Read Only) */}
                             <div className="border-t border-slate-100 pt-6">
                                 <h3 className="text-sm font-bold text-slate-800 mb-4">Metadata</h3>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                                <div className="grid grid-cols-1 [@media(min-width:350px)]:grid-cols-2 gap-4">
                                     <div className={`flex items-start gap-3 p-3 rounded-lg ${displayTask.postpone_count ? 'bg-rose-50' : 'bg-slate-50'}`}>
                                         <RotateCcw className={`w-4 h-4 ${displayTask.postpone_count ? 'text-rose-400' : 'text-slate-400'}`} />
                                         <div>
@@ -250,6 +260,7 @@ const TaskDetailsPanel = ({
                     <Button
                         variant="primary"
                         onClick={handleSave}
+                        isLoading={isSaving}
                         className="cursor-pointer px-8 shadow-lg shadow-emerald-500/20"
                     >
                         Save Changes
