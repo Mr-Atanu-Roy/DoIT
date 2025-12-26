@@ -10,7 +10,7 @@ const Login = () => {
     //redirect to home if user is already logged in
     const { user } = useAuth();
     if (user) {
-        return <Navigate to="/" />;
+        return <Navigate to="/today" />;
     }
 
     return (
