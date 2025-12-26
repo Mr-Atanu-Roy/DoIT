@@ -8,9 +8,17 @@ export const getDateTimeString = (dayOffset = 0, withTime = false) => {
     const d = new Date();
     d.setDate(d.getDate() + dayOffset);
 
-    return withTime
-        ? d.toISOString()                     // timestamptz
-        : d.toISOString().slice(0, 10);       // date
+    // If we need the full timestamp with time
+    if (withTime) {
+        return d.toISOString();
+    }
+
+    // If we only need the date part (YYYY-MM-DD) in LOCAL time
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
 }
 
 
@@ -23,7 +31,7 @@ export const getDateTimeString = (dayOffset = 0, withTime = false) => {
 export const formatDate = (
     timestamp,
     {
-        locale = 'en-GB',
+        locale = undefined,     // undefined for system default timezone
         showDate = true,
         showTime = true,
         showYear = false,

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { X, Clock, RotateCcw, CircleCheckBig, CircleX } from 'lucide-react';
 import Button from '../ui/Button';
 import Loading from '../ui/Loading';
-import { formatDate } from '../../utils/utils';
+import { formatDate, getDateTimeString } from '../../utils/utils';
 
 const TaskDetailsPanel = ({
     selectedTask,
@@ -28,7 +28,7 @@ const TaskDetailsPanel = ({
         title: '',
         description: '',
         priority: '2',
-        scheduled_for: 'tomorrow', // This handles string 'today'/'tomorrow' in UI? Or date?
+        scheduled_for: 'tomorrow', // This handles string 'today'/'tomorrow' in UI
         is_completed: false,
         completed_on: null,
     });
@@ -71,16 +71,15 @@ const TaskDetailsPanel = ({
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            const date = new Date();
-            if (formData.scheduled_for === 'tomorrow') {
-                date.setDate(date.getDate() + 1);
-            }
+            // Use local date calculation via utils
+            const dayOffset = formData.scheduled_for === 'tomorrow' ? 1 : 0;
+            const scheduledFor = getDateTimeString(dayOffset);
 
             await updateTask(cachedTask.id, {
                 title: formData.title,
                 description: formData.description,
                 priority: Number(formData.priority),
-                scheduled_for: date.toISOString(),
+                scheduled_for: scheduledFor,
                 is_completed: formData.is_completed
                 // completed_on handled by backend: tasks.service
             });
