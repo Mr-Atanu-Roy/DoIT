@@ -19,7 +19,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     const initials = getInitials(displayName);
 
     const navItems = [
-        { icon: CalendarClock, label: 'Today', path: '/' },
+        { icon: CalendarClock, label: 'Today', path: '/today' },
         { icon: ClockFading, label: 'Overdue Tasks', path: '/overdue' },
         // { icon: Notebook, label: 'Notes', path: '/notes' },
         // { icon: Settings, label: 'Settings', path: '/settings' },
