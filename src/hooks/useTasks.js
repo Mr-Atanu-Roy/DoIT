@@ -189,7 +189,8 @@ export const useTasks = (day = 0, defaultStatus = 'incompleted', defaultOverdue 
                 setTasks(prev => [newTask, ...prev]);
             }
 
-            toast.success("Task added");
+            //show toast msg: eg- task added for today
+            toast.success(`Task added for ${payload.dayOffset == 0 ? "Today" : "Tomorrow"}`);
         } catch (err) {
             toast.error("Failed to add task err:3");
         }
@@ -213,7 +214,7 @@ export const useTasks = (day = 0, defaultStatus = 'incompleted', defaultOverdue 
                 );
             });
 
-            toast.success(`Task marked ${isCompleted ? "completed" : "incompleted"}`);
+            toast.success(`Task marked ${isCompleted ? "completed" : "incompleted"} `);
         } catch (err) {
             toast.error("Failed to update task err:4");
         }
