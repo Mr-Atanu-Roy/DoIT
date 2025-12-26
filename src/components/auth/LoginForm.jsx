@@ -82,7 +82,7 @@ const LoginForm = () => {
                     }
                     setIsLoading(false);
                 } else {
-                    navigate('/');
+                    navigate('/today');
                 }
             }
         } catch (err) {

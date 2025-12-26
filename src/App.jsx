@@ -7,6 +7,7 @@ import Overdue from './pages/Overdue';
 import Logout from './pages/Logout';
 import VerifyEmail from './pages/VerifyEmail';
 import ResetPassword from './pages/ResetPassword';
+import Landing from './pages/Landing';
 import ProtectedRoute from './routes/ProtectedRoute';
 
 import { Toaster } from 'react-hot-toast';
@@ -22,7 +23,12 @@ function App() {
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/verify-email" element={<VerifyEmail />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/" element={
+
+                {/* Landing Page - Accessible to everyone */}
+                <Route path="/" element={<Landing />} />
+
+                {/* Protected App Routes */}
+                <Route path="/today" element={
                     <ProtectedRoute>
                         <Today />
                     </ProtectedRoute>
