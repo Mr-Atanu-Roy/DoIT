@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { taskService } from '../services/supabase/tasks.service';
-import toast from 'react-hot-toast';
 
 export const useTaskStats = (dayOffset = 0, refreshTrigger = 0) => {
     const [stats, setStats] = useState({
