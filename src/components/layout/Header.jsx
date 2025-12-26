@@ -45,7 +45,7 @@ const Header = ({ onMenuClick, title = "Today", onSearch }) => {
                     className={`
                         flex items-center gap-2 sm:gap-4 
                         transition-all duration-300 ease-in-out overflow-hidden
-                        ${isSearchOpen ? 'w-[280px] opacity-100' : 'w-0 opacity-0 sm:w-auto sm:opacity-100'} 
+                        ${isSearchOpen ? 'w-[265px] opacity-100' : 'w-0 opacity-0 sm:w-auto sm:opacity-100'} 
                     `}
                 >
                     <div className="flex items-center relative w-full">
@@ -53,7 +53,7 @@ const Header = ({ onMenuClick, title = "Today", onSearch }) => {
                         <input
                             type="text"
                             placeholder="Search tasks..."
-                            className="pl-9 pr-4 py-1.5 text-sm bg-slate-50 border-none rounded-full w-full sm:w-96 focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all placeholder:text-slate-400"
+                            className="pl-9 pr-4 py-1.5 text-sm bg-slate-50 border-emerald-500 outline-none border rounded-full w-full sm:w-96 focus:border-emerald-500 focus:bg-white transition-all placeholder:text-slate-400"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
