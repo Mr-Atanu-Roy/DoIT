@@ -3,6 +3,7 @@ import { X, Clock, RotateCcw, CircleCheckBig, CircleX } from 'lucide-react';
 import Button from '../ui/Button';
 import Loading from '../ui/Loading';
 import { formatDate, getDateTimeString } from '../../utils/utils';
+import toast from 'react-hot-toast';
 
 const TaskDetailsPanel = ({
     selectedTask,
@@ -84,7 +85,7 @@ const TaskDetailsPanel = ({
                 // completed_on handled by backend: tasks.service
             });
         } catch (err) {
-            console.error(err);
+            toast.error("Failed to update task");
         } finally {
             setIsSaving(false);
         }
