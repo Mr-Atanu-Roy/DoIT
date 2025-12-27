@@ -2,7 +2,6 @@ import { CalendarClock } from 'lucide-react';
 import PriorityFilter from '../ui/PriorityFilter';
 import IsCompletedFilter from '../ui/IsCompletedFilter';
 import IsOverdueFilter from '../ui/IsOverdueFilter';
-import { useEffect } from 'react';
 
 const FilterBar = ({ filters, setFilters, day = "ALL", setDay = () => { }, showStatus, showPriority, showOverdue }) => {
     // day: 0 is today, 1 is tomorrow.
@@ -12,10 +11,6 @@ const FilterBar = ({ filters, setFilters, day = "ALL", setDay = () => { }, showS
         setDay(isTodayFilterActive ? 1 : 0);
     };
 
-    useEffect(() => {
-        console.log(day);
-        console.log(filters);
-    }, []);
 
     return (
         <>
