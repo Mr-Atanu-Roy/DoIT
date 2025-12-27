@@ -1,8 +1,10 @@
 import { useAuth } from "../../hooks/useAuth";
 import { useTaskStats } from "../../hooks/useTaskStats";
 import { useMemo } from "react";
+import { RotateCcw, Loader2 } from "lucide-react";
+import Button from "../ui/Button";
 
-const SubHeader = ({ dayOffset = 0, refreshTrigger }) => {
+const SubHeader = ({ dayOffset = 0, refreshTrigger, onShowCompleted, onReschedule, isRescheduling }) => {
     const { user } = useAuth();
     const { stats, loading } = useTaskStats(dayOffset, refreshTrigger);
 
@@ -54,7 +56,7 @@ const SubHeader = ({ dayOffset = 0, refreshTrigger }) => {
     }
 
     return (
-        <div className="mb-8 flex flex-col sm:flex-row items-start sm:items-end justify-between sm:gap-3">
+        <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-end justify-between sm:gap-3">
             <div>
                 <h3 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-1 capitalize">
                     {greeting}
@@ -65,11 +67,53 @@ const SubHeader = ({ dayOffset = 0, refreshTrigger }) => {
                 <div className="flex items-center justify-between text-slate-500 text-sm mb-4">
                     <span>{summaryText}</span>
                 </div>
+
+                {/* Destop view: show only if time is > 20.30 and for today */}
+                <div className="hidden sm:block">
+                    {
+                        dayOffset === 0 && (new Date().getHours() > 20 || (new Date().getHours() === 20 && new Date().getMinutes() >= 30)) && (
+                            <div className="flex flex-wrap gap-3 mt-2 justify-between items-center">
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={onShowCompleted}
+                                    className="cursor-pointer outline-none"
+                                >
+                                    Review Finished Tasks
+                                </Button>
+
+                                {active > 0 && (
+                                    <div className="relative">
+                                        {!isRescheduling && (
+                                            <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 z-10">
+                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                                                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-500"></span>
+                                            </span>
+                                        )}
+                                        <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            icon={isRescheduling ? null : RotateCcw}
+                                            isLoading={isRescheduling}
+                                            className={`cursor-pointer outline-none shadow-lg shadow-emerald-200/50`}
+                                            onClick={onReschedule}
+                                            disabled={isRescheduling}
+                                        >
+                                            <RotateCcw className="w-4 h-4 mr-2" />
+                                            Reschedule
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+                        )
+                    }
+                </div>
+
             </div>
 
             {/* Progress Tile */}
             {total > 0 && dayOffset === 0 && (
-                <div className="p-6  rounded-3xl bg-emerald-500 shadow-xl shadow-emerald-200/50 w-full sm:w-[360px] text-white relative overflow-hidden">
+                <div className="p-6  rounded-3xl bg-emerald-500 shadow-xl shadow-emerald-200/50 w-full sm:w-[365px] text-white relative overflow-hidden">
                     <div className="text-emerald-100 text-sm font-medium mb-4">Daily Progress</div>
 
                     <div className="flex items-end justify-between mb-4">
@@ -86,7 +130,58 @@ const SubHeader = ({ dayOffset = 0, refreshTrigger }) => {
                         />
                     </div>
                 </div>
+
             )}
+
+
+            {/* Mobile view: show only if time is > 20.30 and for today */}
+            <div className="mt-3 sm:hidden">
+                {
+                    dayOffset === 0 && (new Date().getHours() > 20 || (new Date().getHours() === 20 && new Date().getMinutes() >= 30)) && (
+                        <div className="flex flex-wrap justify-between items-center gap-3 mt-2">
+                            <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={onShowCompleted}
+                                className="cursor-pointer outline-none"
+                            >
+                                Review Finished Tasks
+                            </Button>
+
+                            {active > 0 && (
+                                <div className="relative">
+                                    {!isRescheduling && (
+                                        <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
+                                        </span>
+                                    )}
+                                    <Button
+                                        variant="primary"
+                                        size="sm"
+                                        icon={isRescheduling ? null : RotateCcw}
+                                        className={`cursor-pointer outline-none shadow-lg shadow-emerald-200/50`}
+                                        onClick={onReschedule}
+                                        disabled={isRescheduling}
+                                    >
+                                        {isRescheduling ? (
+                                            <>
+                                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                Rescheduling...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <RotateCcw className="w-4 h-4 mr-2" />
+                                                Reschedule
+                                            </>
+                                        )}
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                    )
+                }
+            </div>
         </div>
     );
 };

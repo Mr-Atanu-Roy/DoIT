@@ -107,6 +107,7 @@ export const taskService = {
     */
     async moveTaskDay(taskId, dayOffset = 1) {
         if (!supabase) return { error: { message: "Supabase not initialized" } };
+        if (dayOffset < 0) return { error: { message: "Day offset must be at least 0" } };
 
         return await supabase.rpc("move_task_day", {
             p_task_id: taskId,
@@ -216,6 +217,43 @@ export const taskService = {
         } catch (error) {
             return { error };
         }
+    },
+
+    /**
+    * Bulk move tasks to next day/prev day
+    * @param {int[]} taskIds: array of task ids
+    * @param {int} dayOffset: 1: next day, -1: prev day
+    * @returns {Promise<{data, error}>}
+    */
+    async bulkMoveTasksDay(taskIds = [], dayOffset = 1) {
+        if (!supabase) return { error: { message: "Supabase not initialized" } };
+        if (dayOffset < 0) return { error: { message: "Day offset must be at least 0" } };
+
+        return await supabase.rpc('move_tasks_day_bulk', {
+            p_task_ids: taskIds,
+            p_day_offset: dayOffset
+        });
+    },
+
+    /**
+    * Get all active task IDs for a specific day: default today
+    * @param {int} dayOffset
+    * @returns {Promise<{data: int[], error}>}
+    */
+    async getActiveTaskIds(dayOffset = 0) {
+        if (!supabase) return { error: { message: "Supabase not initialized" } };
+
+        const date = getDateTimeString(dayOffset);
+
+        const { data, error } = await supabase
+            .from('tasks')
+            .select('id')
+            .eq('scheduled_for', date)
+            .eq('is_completed', false);
+
+        if (error) return { error };
+
+        return { data: data.map(t => t.id) };
     }
 
 }

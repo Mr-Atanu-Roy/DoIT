@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import toast from 'react-hot-toast';
 import Sidebar from '../components/layout/Sidebar';
 import Header from '../components/layout/Header';
 import TodoList from '../components/todo/TodoList';
@@ -26,6 +27,7 @@ const Today = () => {
         setFilters,
         getSelectedTask,
         rescheduleTaskDay,
+        rescheduleAllActiveTasks,
         setSelectedTask,
         fetchMoreTasks,
         addTask,
@@ -76,6 +78,22 @@ const Today = () => {
     };
 
 
+    const [isRescheduling, setIsRescheduling] = useState(false);
+
+    const handleShowCompleted = () => {
+        setFilters(prev => ({ ...prev, status: 'completed' }));
+    };
+
+    const handleBulkReschedule = async () => {
+        setIsRescheduling(true);
+        //rescedule current day: incomplete tasks to next day
+        const success = await rescheduleAllActiveTasks(day, 1);
+        if (success) {
+            triggerRefresh();
+        }
+        setIsRescheduling(false);
+    };
+
     return (
         <div className="flex bg-slate-50 min-h-screen">
             <Sidebar
@@ -90,7 +108,13 @@ const Today = () => {
                 />
 
                 <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full relative">
-                    <SubHeader dayOffset={day} refreshTrigger={refreshTrigger} />
+                    <SubHeader
+                        dayOffset={day}
+                        refreshTrigger={refreshTrigger}
+                        onShowCompleted={handleShowCompleted}
+                        onReschedule={handleBulkReschedule}
+                        isRescheduling={isRescheduling}
+                    />
 
                     {/* Header & Filters */}
                     <FilterBar

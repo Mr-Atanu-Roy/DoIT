@@ -329,6 +329,49 @@ export const useTasks = (day = 0, defaultStatus = 'incompleted', defaultOverdue 
         }
     };
 
+    const rescheduleBulkTasksDay = async (taskIds, dayOffset = 1) => {
+        try {
+            const { data, error } = await taskService.bulkMoveTasksDay(taskIds, dayOffset);
+            if (error) throw error;
+
+            // data is object { count, ids }
+            const movedIds = data?.ids || [];
+            const count = data?.count || 0;
+
+            // Remove moved tasks from list
+            setTasks(prev => prev.filter(t => !movedIds.includes(t.id)));
+
+            toast.success(`Rescheduled ${count} tasks to ${dayOffset === 1 ? "tomorrow" : ""}`);
+            if (count !== taskIds.length) {
+                toast.error(`Failed to reschedule ${taskIds.length - count} tasks.`);
+            }
+
+            return true;
+        } catch (err) {
+            console.log(err);
+            toast.error("Failed to reschedule tasks err:8");
+            return false;
+        }
+    };
+
+    const rescheduleAllActiveTasks = async (currentDayOffset = 0, newDayOffset = 1) => {
+        try {
+            const { data: ids, error } = await taskService.getActiveTaskIds(currentDayOffset);
+            if (error) throw error;
+
+            if (!ids || ids.length === 0) {
+                toast.error("No active tasks to reschedule!");
+                return false;
+            }
+
+            return await rescheduleBulkTasksDay(ids, newDayOffset);
+        } catch (err) {
+            console.log("Error finding active tasks", err);
+            toast.error("Failed to find tasks to reschedule.");
+            return false;
+        }
+    };
+
     // --------------------
     // EFFECT
     // --------------------
@@ -354,11 +397,16 @@ export const useTasks = (day = 0, defaultStatus = 'incompleted', defaultOverdue 
 
         getSelectedTask,
         fetchMoreTasks,
+
         addTask,
         updateTask,
         markTask,
         deleteTask,
+
         rescheduleTaskDay,
+        rescheduleBulkTasksDay,
+        rescheduleAllActiveTasks,
+
         getSelectedTask,
         setSelectedTask,
 
