@@ -19,13 +19,23 @@ const SubHeader = ({ dayOffset = 0, refreshTrigger }) => {
     const progress = total > 0 ? (completed / total) * 100 : 0;
 
     const summaryText = useMemo(() => {
+
+        //for tomorrow
         if (dayOffset === 1) {
-            if (active === 0) return "You have not scheduled any tasks for tomorrow.";
+
+            //check if user has any tasks scheduled for tomorrow
+            if (total === 0) return "You have not scheduled any tasks for tomorrow.";
+
+            //otherwise
             if (active === 1) return "You have scheduled 1 task for tomorrow.";
             return `You have scheduled ${active} tasks for tomorrow.`;
         }
 
         // Default to today
+        // check if user has any tasks scheduled for today
+        if (total === 0) return "You have not scheduled any tasks for today.";
+
+        //otherwise
         if (active === 0) return "You have completed all tasks for today.";
         if (active === 1) return "You have 1 more task to complete for today.";
         return `You have ${active} more tasks to complete for today.`;
