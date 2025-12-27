@@ -10,7 +10,7 @@ import { ChevronDown } from "lucide-react";
  * @param {Array} options - List of options {id, label, color?}
  * @param {Function} onChange - Callback when an option is selected
  */
-const TagSelect = ({ label, value, options, onChange }) => {
+const TagSelect = ({ label, value, options, onChange, disabled }) => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef(null);
 
@@ -41,14 +41,15 @@ const TagSelect = ({ label, value, options, onChange }) => {
             {/* Tag Button */}
             <button
                 type="button"
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={!disabled ? () => setIsOpen(!isOpen) : null}
                 className={`
-                    flex items-center gap-1.5 px-3 py-1.5 md:px-3.5 md:py-2 rounded-full text-xs font-medium transition-all duration-200 border cursor-pointer select-none group
-                    ${isOpen
-                        ? "bg-slate-100 border-slate-300 text-slate-900 ring-2 ring-slate-100 ring-offset-1"
-                        : "bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+                    flex items-center gap-1.5 px-3 py-1.5 md:px-3.5 md:py-2 rounded-full text-xs font-medium transition-all duration-200 border  ${disabled ? "cursor-not-allowed" : "cursor-pointer"} select-none group
+                    ${disabled ? "bg-slate-100 border-slate-200 text-slate-400"
+                        : isOpen
+                            ? "bg-slate-100 border-slate-300 text-slate-900 ring-2 ring-slate-100 ring-offset-1"
+                            : "bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50"
                     }
-                    ${!isAll ? "bg-slate-50 text-slate-900 border-slate-300" : ""}
+                    ${!isAll ? "bg-slate-50 border-slate-300" : ""}
                 `}
                 aria-haspopup="listbox"
                 aria-expanded={isOpen}
@@ -61,7 +62,7 @@ const TagSelect = ({ label, value, options, onChange }) => {
             </button>
 
             {/* Dropdown Menu */}
-            {isOpen && (
+            {isOpen && !disabled && (
                 <div
                     className="absolute z-50 top-full left-0 mt-1 min-w-[140px] bg-white rounded-xl shadow-lg border border-slate-100 py-1.5 animate-in fade-in zoom-in-95 duration-100 origin-top-left"
                     role="listbox"

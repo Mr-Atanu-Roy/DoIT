@@ -1,6 +1,6 @@
 import TagSelect from './TagSelect';
 
-const IsCompletedFilter = ({ status, setIsCompleteFilter }) => {
+const IsCompletedFilter = ({ status, setIsCompleteFilter, disabled }) => {
     const options = [
         { id: 'all', label: 'All', color: 'bg-blue-500' },
         { id: 'incompleted', label: 'Incompleted', color: 'bg-rose-500' },
@@ -13,6 +13,7 @@ const IsCompletedFilter = ({ status, setIsCompleteFilter }) => {
             value={status}
             options={options}
             onChange={setIsCompleteFilter}
+            disabled={disabled}
         />
     );
 };
