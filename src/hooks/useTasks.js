@@ -159,14 +159,14 @@ export const useTasks = (day = 0, defaultStatus = 'incompleted', defaultOverdue 
         const titleCheck = validateTasks.title(payload.title);
         if (!titleCheck.status) {
             toast.error(titleCheck.message);
-            return;
+            return false;
         }
 
         //priority required
         const priorityCheck = validateTasks.priority(payload.priority);
         if (!priorityCheck.status) {
             toast.error(priorityCheck.message);
-            return;
+            return false;
         }
 
         //validate description if given
@@ -174,7 +174,7 @@ export const useTasks = (day = 0, defaultStatus = 'incompleted', defaultOverdue 
             const descriptionCheck = validateTasks.description(payload.description);
             if (!descriptionCheck.status) {
                 toast.error(descriptionCheck.message);
-                return;
+                return false;
             }
         }
 
@@ -191,8 +191,10 @@ export const useTasks = (day = 0, defaultStatus = 'incompleted', defaultOverdue 
 
             //show toast msg: eg- task added for today
             toast.success(`Task added for ${payload.dayOffset == 0 ? "Today" : "Tomorrow"}`);
+            return true;
         } catch (err) {
             toast.error("Failed to add task err:3");
+            return false;
         }
     };
 
@@ -305,10 +307,8 @@ export const useTasks = (day = 0, defaultStatus = 'incompleted', defaultOverdue 
             const { data, error } = await taskService.moveTaskDay(taskId, dayOffset);
             if (error) throw error;
 
-            // Optimistic update: Remove from list logic handles it if day changed
-            // But we can check isTaskVisible with the NEW date if we had the full task object.
-            // However, moveTaskDay returns the updated task usually (select() at end).
-            // Let's assume data[0] is returned.
+            // Remove from list logic handles it if day changed
+            // we can check isTaskVisible with the NEW date if we had the full task object.
             if (data && data[0]) {
                 const updatedTask = data[0];
                 setTasks(prev => {

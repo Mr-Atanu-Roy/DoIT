@@ -47,8 +47,11 @@ const Today = () => {
 
     // Wrappers to update stats when tasks change
     const handleAddTask = async (task) => {
-        await addTask(task);
-        triggerRefresh();
+        const success = await addTask(task);
+        if (success) {
+            triggerRefresh();
+        }
+        return success;
     };
 
     const handleUpdateTask = async (id, updates) => {

@@ -1,11 +1,14 @@
-import { useState } from 'react';
-import { Plus, CalendarClock } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Plus, CalendarClock, Loader2 } from 'lucide-react';
 import Button from '../ui/Button';
+import toast from 'react-hot-toast';
 
 const AddTaskInput = ({ addTask }) => {
     // Task Input State
     const [newTask, setNewTask] = useState("");
     const [newPriority, setNewPriority] = useState("2"); // Default Medium (2)
+    const [addTaskLoading, setAddTaskLoading] = useState(false); //loading state for add task
+    const inputRef = useRef(null);
 
     // Default scheduled: today if before 6 PM (18:00), else tomorrow
     const [isScheduledForToday, setIsScheduledForToday] = useState(() => {
@@ -22,22 +25,36 @@ const AddTaskInput = ({ addTask }) => {
         { id: '3', label: 'Low', color: 'bg-emerald-500', hover: 'hover:bg-emerald-50 text-emerald-600' }
     ];
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         if (e) e.preventDefault();
-        if (!newTask.trim()) return;
+        if (!newTask.trim() || addTaskLoading) return;
 
         // Calculate dayOffset for service
         const dayOffset = isScheduledForToday ? 0 : 1;
 
-        addTask({
-            title: newTask,
-            priority: Number(newPriority),
-            dayOffset: dayOffset,
-            is_completed: false
-        });
+        setAddTaskLoading(true);
 
-        setNewTask("");
-        setNewPriority("2");
+        try {
+            const success = await addTask({
+                title: newTask,
+                priority: Number(newPriority),
+                dayOffset: dayOffset,
+                is_completed: false
+            });
+
+            if (success) {
+                setNewTask("");
+                setNewPriority("2");
+            }
+        } catch (error) {
+            // Error handled in useTasks
+        } finally {
+            setAddTaskLoading(false);
+            // Keep focus on input after adding task
+            setTimeout(() => {
+                inputRef.current?.focus();
+            }, 0);
+        }
     };
 
     return (
@@ -54,11 +71,13 @@ const AddTaskInput = ({ addTask }) => {
                     <div className="relative">
 
                         <input
+                            ref={inputRef}
                             type="text"
                             placeholder="Add a new task..."
                             className="w-full pl-6 pr-20 md:py-4 py-2 pb-2.5 rounded-2xl bg-white outline-none text-lg placeholder:text-slate-400"
                             value={newTask}
                             onChange={(e) => setNewTask(e.target.value)}
+                            disabled={addTaskLoading}
                         />
 
                         <div className="absolute right-1 top-1 bottom-1">
@@ -66,13 +85,17 @@ const AddTaskInput = ({ addTask }) => {
                             <Button
                                 type="submit"
                                 variant="primary"
-                                className="h-10 w-10 rounded-xl p-0 flex items-center justify-center shadow-md hover:shadow-lg cursor-pointer"
-                                disabled={!newTask.trim()}
+                                className="h-10 w-10 rounded-xl p-0 flex items-center justify-center shadow-md hover:shadow-lg cursor-pointer transition-all duration-200"
+                                disabled={!newTask.trim() || addTaskLoading}
                                 style={{
                                     "padding": "5.5px"
                                 }}
                             >
-                                <Plus className="w-10 h-10" />
+                                {addTaskLoading ? (
+                                    <Loader2 className="w-6 h-6 animate-spin" />
+                                ) : (
+                                    <Plus className="w-10 h-10" />
+                                )}
                             </Button>
                         </div>
                     </div>
