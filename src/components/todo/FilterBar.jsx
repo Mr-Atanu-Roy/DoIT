@@ -8,6 +8,9 @@ const FilterBar = ({ filters, setFilters, day = "ALL", setDay = () => { }, showS
     const isTodayFilterActive = day === 0;
 
     const handleDayToggle = () => {
+        if (isTodayFilterActive) {
+            setFilters(prev => ({ ...prev, status: 'all' }));
+        }
         setDay(isTodayFilterActive ? 1 : 0);
     };
 
