@@ -11,16 +11,13 @@ export const useTaskStats = (dayOffset = 0, refreshTrigger = 0) => {
 
     const fetchStats = useCallback(async () => {
         try {
-            // slightly delay 
-            // setStatsLoading(true); // Maybe not needed to flicker loading state on refresh if we want subtle updates
-
             const { data, error } = await taskService.getTaskStatsByDay(dayOffset);
             if (error) throw error;
 
             setStats(data);
         } catch (err) {
             console.error(err);
-            // toast.error("Failed to load stats"); // Suppress error for header stats to avoid noise? Or keep it? Plan says "Handle loading state gracefully", implies UI.
+            // toast.error("Failed to load stats"); 
         } finally {
             setLoading(false);
         }

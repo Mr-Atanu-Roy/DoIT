@@ -91,16 +91,25 @@ const SubHeader = ({ dayOffset = 0, refreshTrigger, onShowCompleted, onReschedul
                                             </span>
                                         )}
                                         <Button
-                                            variant="secondary"
+                                            variant="primary"
                                             size="sm"
                                             icon={isRescheduling ? null : RotateCcw}
                                             isLoading={isRescheduling}
-                                            className={`cursor-pointer outline-none shadow-lg shadow-emerald-200/50`}
+                                            className={`cursor-pointer outline-none`}
                                             onClick={onReschedule}
                                             disabled={isRescheduling}
                                         >
-                                            <RotateCcw className="w-4 h-4 mr-2" />
-                                            Reschedule
+                                            {isRescheduling ? (
+                                                <>
+                                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                    Rescheduling...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <RotateCcw className="w-4 h-4 mr-2" />
+                                                    Reschedule
+                                                </>
+                                            )}
                                         </Button>
                                     </div>
                                 )}
@@ -135,7 +144,7 @@ const SubHeader = ({ dayOffset = 0, refreshTrigger, onShowCompleted, onReschedul
 
 
             {/* Mobile view: show only if time is > 20.30 and for today */}
-            <div className="mt-3 sm:hidden">
+            <div className="mt-3 sm:hidden w-full">
                 {
                     dayOffset === 0 && (new Date().getHours() > 20 || (new Date().getHours() === 20 && new Date().getMinutes() >= 30)) && (
                         <div className="flex flex-wrap justify-between items-center gap-3 mt-2">
@@ -160,7 +169,7 @@ const SubHeader = ({ dayOffset = 0, refreshTrigger, onShowCompleted, onReschedul
                                         variant="primary"
                                         size="sm"
                                         icon={isRescheduling ? null : RotateCcw}
-                                        className={`cursor-pointer outline-none shadow-lg shadow-emerald-200/50`}
+                                        className={`cursor-pointer outline-none`}
                                         onClick={onReschedule}
                                         disabled={isRescheduling}
                                     >
