@@ -79,7 +79,7 @@ const SubHeader = ({ dayOffset = 0, refreshTrigger, onShowCompleted, onReschedul
                                     onClick={onShowCompleted}
                                     className="cursor-pointer outline-none"
                                 >
-                                    Review Finished Tasks
+                                    Finished Today
                                 </Button>
 
                                 {active > 0 && (
@@ -145,15 +145,15 @@ const SubHeader = ({ dayOffset = 0, refreshTrigger, onShowCompleted, onReschedul
                                 onClick={onShowCompleted}
                                 className="cursor-pointer outline-none"
                             >
-                                Review Finished Tasks
+                                Finished Today
                             </Button>
 
                             {active > 0 && (
                                 <div className="relative">
                                     {!isRescheduling && (
-                                        <span className="absolute -top-1 -right-1 flex h-3 w-3 z-10">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
+                                        <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5 z-10">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-500"></span>
                                         </span>
                                     )}
                                     <Button
