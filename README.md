@@ -1,21 +1,27 @@
 
-![DoIT Banner](./src/assets/logo/logo_full.png)
+<div align="center">
+  <img src="./src/assets/logo/logo_full_side-removebg.png" alt="DoIT Logo" width="210" />
+  
+  <p align="center">
+    <b>DoIT is a today & tomorrow focused, calm, minimal, and minimalistic todo app. It is build for the people who want to work calmly and consistently, not hustle endlessly.</b>
+  </p>
 
----
+</div>
 
-## ❤️ Philosophy
+<hr />
 
 
-> **Productivity should reduce anxiety, not create it.**
+### ✨ What Does It Solve?
 
-### ✨ What Problem Does It Solve?
-
-- **No more hidden backlogs:** Tasks not completed don't vanish—they move to Overdue so you can't ignore them, but they don't clutter your "Today".
-- **Clarity over guilt:** You always know what matters *today*.
-- **Frictionless rescheduling:** Move unfinished tasks to tomorrow in bulk.
+- **Today & Tomorrow Focus:** Most of the TODO apps are just a list of tasks, task scheduling, remider and all. This app's main aim is to focus on today and tomorrow.
+- **Clarity over guilt:** User always know what matters *today*.
 - **Calm consistency:** Built for people who want to work calmly and consistently, not hustle endlessly.
 
 ---
+
+<div align="center" width="100%">
+  <img src="./src/assets/images/landing/today.png" alt="DoIT Logo" width="95%" />
+</div>
 
 ## 🚀 Core Features
 
@@ -25,7 +31,7 @@
 - Tomorrow and Overdue tasks are clearly separated.
 - No anxiety-inducing huge list of everything you've ever thought of doing.
 
-### 🔄 Smart Rescheduling
+### 🔄 Efficient Rescheduling
 
 - Move tasks to the next day with **one click**.
 - **Bulk reschedule** unfinished tasks at the end of the day.
@@ -34,7 +40,7 @@
 ### ⚠️ Gentle Overdue Handling
 
 - Missed tasks are clearly visible in an **Overdue view**.
-- They don't disappear, but they don't clutter your minimal "Today" list.
+- They don't disappear, don't clutter your minimal "Today" list.
 - Encourages recovery and planning, not guilt.
 
 ### 📊 Daily Progress & Focus
@@ -51,7 +57,7 @@
 
 - **React (Vite)**
 - **Tailwind CSS**
-- **Lucide Icons** for beautiful imagery
+- **Lucide Icons** for beautiful icons
 
 ### Backend & Auth
 
@@ -59,25 +65,6 @@
 - **Supabase Auth** (Secure login, registration, user isolation)
 
 ---
-
-## 🖼️ Demo & Screenshots
-
-> *Screenshots of the app (desktop & mobile views) will be added here.*
-
-### Landing Page
-<!-- Add screenshot here -->
-
-### Today View
-<!-- Add screenshot here -->
-
-### Overdue Tasks
-<!-- Add screenshot here -->
-
-### Task Details Panel
-<!-- Add screenshot here -->
-
-### Mobile View
-<!-- Add screenshot here -->
 
 ---
 
@@ -97,16 +84,16 @@ The app is stable and usable with all core features implemented.
 **Future Roadmap:**
 
 - [ ] Notes support
-- [ ] End-of-day review flow
-- [ ] Focus mode
+- [ ] History tracking for tasks
 - [ ] Retention improvements
 
 ---
 
-## 👤 Author
 
-**Anil**
+## Authors
+
+- [@Mr-Atanu-Roy](https://github.com/Mr-Atanu-Roy)
+
 
 ---
 
-*DoIT — Because what you do today matters more than what you planned yesterday.*
