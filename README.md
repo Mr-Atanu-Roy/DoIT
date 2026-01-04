@@ -1,9 +1,9 @@
 
 <div align="center">
-  <img src="./src/assets/logo/logo_full_side-removebg.png" alt="DoIT Logo" width="210" />
+  <img src="./src/assets/logo/logo_full_side-removebg.png" alt="DoIT Logo" width="280" />
   
   <p align="center">
-    <b>DoIT is a today & tomorrow focused, calm, minimal, and minimalistic todo app. It is build for the people who want to work calmly and consistently, not hustle endlessly.</b>
+    <b>DoIT is a today & tomorrow focused, calm, minimal, and minimalistic todo app. It is build for the people who want to work calmly and consistently, focus mainly on today and tomorrow.</b>
   </p>
 
 </div>
@@ -11,13 +11,13 @@
 <hr />
 
 
-### ✨ What Does It Solve?
+### ✨ What ProblemDoes It Solve?
 
 - **Today & Tomorrow Focus:** Most of the TODO apps are just a list of tasks, task scheduling, remider and all. This app's main aim is to focus on today and tomorrow.
 - **Clarity over guilt:** User always know what matters *today*.
 - **Calm consistency:** Built for people who want to work calmly and consistently, not hustle endlessly.
 
----
+
 
 <div align="center" width="100%">
   <img src="./src/assets/images/landing/today.png" alt="DoIT Logo" width="95%" />
@@ -49,7 +49,7 @@
 - **Priority-Driven Focus:** High-priority tasks are visually highlighted (3 levels).
 - Minimal, clean, and accessible UI.
 
----
+
 
 ## 🛠️ Technologies Used
 
@@ -64,16 +64,14 @@
 - **Supabase** (PostgreSQL database)
 - **Supabase Auth** (Secure login, registration, user isolation)
 
----
 
----
 
 ## 📦 Deployment
 
 - **Frontend:** Deployed on Vercel
 - **Backend:** Hosted on Supabase
 
----
+
 
 ## 📌 Project Status
 
@@ -87,13 +85,11 @@ The app is stable and usable with all core features implemented.
 - [ ] History tracking for tasks
 - [ ] Retention improvements
 
----
+
 
 
 ## Authors
 
 - [@Mr-Atanu-Roy](https://github.com/Mr-Atanu-Roy)
 
-
----
 
