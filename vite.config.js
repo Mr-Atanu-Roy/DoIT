@@ -6,7 +6,7 @@ const manifestForPlugIn = {
   registerType: "autoUpdate",
   includeAssets: ["favicon.ico"],
   manifest: {
-    name: "DoIT – Master Your Day",
+    name: "DoIT – Focus on Today",
     short_name: "DoIT",
     theme_color: "#0f172a",
     background_color: "#0f172a",
