@@ -13,3 +13,17 @@ createRoot(document.getElementById('root')).render(
     </AuthProvider>
   </StrictMode>,
 )
+
+
+
+// for PWA 
+import { registerSW } from "virtual:pwa-register";
+
+registerSW({
+  onNeedRefresh() {
+    console.log("New version available");
+  },
+  onOfflineReady() {
+    console.log("App ready to work offline");
+  }
+});
